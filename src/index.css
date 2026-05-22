@@ -1,0 +1,193 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* 70% Beige claro / blanco cálido background */
+    --background: 38 31% 96%; /* #FAF7F2 */
+    /* 20% Gris topo para textos principales y autoridad */
+    --foreground: 26 11% 39%; /* #6E6259 */
+
+    --card: 0 0% 100%; /* Tarjetas en blanco puro */
+    --card-foreground: 26 11% 39%;
+
+    --popover: 38 31% 96%;
+    --popover-foreground: 26 11% 39%;
+
+    /* 10% Terracota elegante para CTA y conversiones */
+    --primary: 19 44% 51%; /* #B76E4D */
+    --primary-foreground: 38 31% 96%;
+
+    /* Gris topo oscuro / Espresso para footer y profundidad */
+    --secondary: 30 17% 25%; /* #4A3F35 */
+    --secondary-foreground: 38 31% 96%;
+
+    --muted: 32 38% 86%; /* #E9DDCF (Beige más oscuro) */
+    --muted-foreground: 26 11% 39%;
+
+    --accent: 19 44% 51%;
+    --accent-foreground: 38 31% 96%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 32 38% 80%;
+    --input: 32 38% 80%;
+    --ring: 19 44% 51%;
+
+    --radius: 0.25rem; /* Un look más minimalista y premium de bordes más rectos */
+
+    /* Custom luxury tokens */
+    --luxury-cream: 38 31% 96%;
+    --luxury-black: 26 11% 39%;
+    --luxury-gold: 19 44% 51%;
+    --luxury-green: 30 17% 25%;
+    --luxury-white: 0 0% 100%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(180deg, transparent 0%, hsl(26 11% 15% / 0.3) 100%);
+    --gradient-card: linear-gradient(180deg, transparent 0%, hsl(26 11% 15% / 0.5) 100%);
+
+    /* Shadows */
+    --shadow-elegant: 0 20px 50px -15px hsl(26 11% 20% / 0.08);
+    --shadow-card: 0 10px 30px -10px hsl(26 11% 20% / 0.05);
+
+    --sidebar-background: 38 31% 96%;
+    --sidebar-foreground: 26 11% 39%;
+    --sidebar-primary: 19 44% 51%;
+    --sidebar-primary-foreground: 38 31% 96%;
+    --sidebar-accent: 32 38% 86%;
+    --sidebar-accent-foreground: 26 11% 39%;
+    --sidebar-border: 32 38% 80%;
+    --sidebar-ring: 19 44% 51%;
+  }
+
+  .dark {
+    --background: 26 21% 15%; /* #2E251E (Espresso oscuro) */
+    --foreground: 38 31% 96%;
+
+    --card: 30 17% 25%; /* #4A3F35 */
+    --card-foreground: 38 31% 96%;
+
+    --popover: 30 17% 25%;
+    --popover-foreground: 38 31% 96%;
+
+    --primary: 19 44% 51%;
+    --primary-foreground: 26 21% 15%;
+
+    --secondary: 38 31% 96%;
+    --secondary-foreground: 26 21% 15%;
+
+    --muted: 30 17% 20%;
+    --muted-foreground: 38 31% 86%;
+
+    --accent: 19 44% 51%;
+    --accent-foreground: 26 21% 15%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 30 17% 20%;
+    --input: 30 17% 20%;
+    --ring: 19 44% 51%;
+
+    --sidebar-background: 26 21% 15%;
+    --sidebar-foreground: 38 31% 96%;
+    --sidebar-primary: 19 44% 51%;
+    --sidebar-primary-foreground: 26 21% 15%;
+    --sidebar-accent: 30 17% 20%;
+    --sidebar-accent-foreground: 38 31% 96%;
+    --sidebar-border: 30 17% 20%;
+    --sidebar-ring: 19 44% 51%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+
+  ::selection {
+    @apply bg-primary text-primary-foreground;
+  }
+}
+
+@layer components {
+  .luxury-container {
+    @apply max-w-[90rem] mx-auto px-6 md:px-12;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer utilities {
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Reveal animations */
+  .reveal-up {
+    @apply opacity-0 translate-y-[60px] transition-all duration-[1200ms];
+    transition-timing-function: cubic-bezier(0.2, 1, 0.3, 1);
+  }
+
+  .reveal-active {
+    @apply opacity-100 translate-y-0;
+  }
+
+  /* Line reveal */
+  .line-reveal {
+    @apply w-0 transition-all duration-[1500ms];
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .line-reveal.active {
+    @apply w-full;
+  }
+
+  /* Mask reveal */
+  .mask-overlay {
+    @apply absolute inset-0 bg-background z-[2] transition-transform duration-[1200ms];
+    transition-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+    transform-origin: bottom;
+  }
+
+  .mask-reveal .mask-overlay {
+    transform: translateY(-100%);
+  }
+
+  /* Hover effects */
+  .hover-lift {
+    @apply transition-transform duration-500;
+  }
+
+  .hover-lift:hover {
+    @apply -translate-y-1;
+  }
+
+  .image-zoom {
+    @apply transition-transform;
+    transition-duration: 1500ms;
+  }
+
+  .group:hover .image-zoom {
+    @apply scale-105;
+  }
+}
