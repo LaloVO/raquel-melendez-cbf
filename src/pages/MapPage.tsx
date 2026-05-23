@@ -33,6 +33,19 @@ const MapPage = () => {
 
   const mapboxToken = (site?.platform_config?.mapbox_token || import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || '').trim();
 
+  const centerCoordinates = useMemo(() => {
+    const latParam = searchParams.get('lat');
+    const lngParam = searchParams.get('lng');
+    if (latParam && lngParam) {
+      const lat = parseFloat(latParam);
+      const lng = parseFloat(lngParam);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        return { lat, lng };
+      }
+    }
+    return undefined;
+  }, [searchParams]);
+
   // Synchronize Hero Section parameters on mount/param change
   useEffect(() => {
     const actionParam = searchParams.get('action');
@@ -127,7 +140,12 @@ const MapPage = () => {
               resultCount={filtered.length}
             />
           </div>
-          <PropertyMap properties={mapProperties} mapboxToken={mapboxToken} />
+          <PropertyMap
+            properties={mapProperties}
+            mapboxToken={mapboxToken}
+            searchQuery={filters.search}
+            centerCoordinates={centerCoordinates}
+          />
         </div>
 
         {/* Property list sidebar - Styled in beautiful liquidglass */}

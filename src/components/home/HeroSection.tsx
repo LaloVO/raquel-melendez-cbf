@@ -1,16 +1,25 @@
 import { Search, MapPin, Home, ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSiteUser } from '@/hooks/useSiteUser';
 
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const navigate = useNavigate();
+  const { site } = useSiteUser();
+
+  const mapboxToken = (site?.platform_config?.mapbox_token || import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || '').trim();
 
   // Search Filter State
   const [transactionType, setTransactionType] = useState<'1' | '2'>('1'); // 1 = Venta, 2 = Renta
   const [propertyType, setPropertyType] = useState<string>('');
   const [locationText, setLocationText] = useState<string>('');
+
+  // Suggestions and Autocomplete State
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedCoords, setSelectedCoords] = useState<{ lat: number; lng: number; name: string } | null>(null);
 
   useEffect(() => {
     setIsVisible(true);
@@ -23,12 +32,85 @@ const HeroSection = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleSearch = (e: React.FormEvent) => {
+  // Listen to clicks outside to close suggestions dropdown
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setShowSuggestions(false);
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
+  // Fetch suggestions with debounce as the user types
+  useEffect(() => {
+    if (!locationText.trim() || !mapboxToken) {
+      setSuggestions([]);
+      return;
+    }
+
+    // If the locationText matches the selected coordinates' name, don't query again
+    if (selectedCoords && locationText === selectedCoords.name) {
+      return;
+    }
+
+    const delayDebounce = setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+            locationText
+          )}.json?access_token=${mapboxToken}&limit=5&types=neighborhood,locality,place,address&country=mx,us`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setSuggestions(data.features || []);
+          setShowSuggestions(true);
+        }
+      } catch (error) {
+        console.error('Error fetching suggestions:', error);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounce);
+  }, [locationText, mapboxToken, selectedCoords]);
+
+  const handleSuggestionClick = (feature: any) => {
+    const [lng, lat] = feature.center;
+    const name = feature.place_name;
+    setLocationText(name);
+    setSelectedCoords({ lat, lng, name });
+    setSuggestions([]);
+    setShowSuggestions(false);
+  };
+
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
     if (transactionType) params.set('action', transactionType);
     if (propertyType) params.set('type', propertyType);
     if (locationText) params.set('search', locationText);
+    
+    if (selectedCoords) {
+      params.set('lat', String(selectedCoords.lat));
+      params.set('lng', String(selectedCoords.lng));
+    } else if (locationText.trim() && mapboxToken) {
+      try {
+        const response = await fetch(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+            locationText
+          )}.json?access_token=${mapboxToken}&limit=1&country=mx,us`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          if (data?.features && data.features.length > 0) {
+            const [lng, lat] = data.features[0].center;
+            params.set('lat', String(lat));
+            params.set('lng', String(lng));
+          }
+        }
+      } catch (error) {
+        console.error('Error geocoding in HeroSection:', error);
+      }
+    }
     
     navigate(`/mapa?${params.toString()}`);
   };
@@ -122,15 +204,44 @@ const HeroSection = () => {
           <div className="hidden md:block w-px h-6 bg-white/20" />
 
           {/* Location Search Field */}
-          <div className="flex-1 w-full flex items-center px-4 py-2">
+          <div className="relative flex-1 w-full flex items-center px-4 py-2">
             <MapPin className="w-4 h-4 text-[#B76E4D] mr-3 shrink-0" />
             <input
               type="text"
               placeholder="¿Qué colonia buscas? (ej. Polanco, Lomas...)"
               value={locationText}
-              onChange={(e) => setLocationText(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+              onChange={(e) => {
+                setLocationText(e.target.value);
+                if (selectedCoords && e.target.value !== selectedCoords.name) {
+                  setSelectedCoords(null);
+                }
+              }}
+              onFocus={(e) => {
+                e.stopPropagation();
+                setShowSuggestions(true);
+              }}
               className="bg-transparent w-full outline-none text-[#FAF7F2] placeholder-white/45 font-sans text-xs md:text-sm"
             />
+
+            {/* Suggestions Dropdown */}
+            {showSuggestions && suggestions.length > 0 && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="absolute left-0 right-0 top-full mt-3 bg-[#2E251E]/95 backdrop-blur-md border border-white/10 shadow-elegant z-50 max-h-60 overflow-y-auto rounded-md"
+              >
+                {suggestions.map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => handleSuggestionClick(s)}
+                    className="w-full text-left px-4 py-2.5 text-[11px] text-white/80 hover:bg-[#B76E4D] hover:text-white font-sans transition-colors border-b border-white/5 last:border-0"
+                  >
+                    {s.place_name}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Vertical divider */}

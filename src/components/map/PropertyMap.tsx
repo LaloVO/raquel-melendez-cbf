@@ -21,14 +21,22 @@ export interface MapProperty {
 interface PropertyMapProps {
   properties: MapProperty[];
   mapboxToken: string;
+  searchQuery?: string;
+  centerCoordinates?: { lat: number; lng: number };
 }
 
-const PropertyMap = ({ properties, mapboxToken }: PropertyMapProps) => {
+const PropertyMap = ({
+  properties,
+  mapboxToken,
+  searchQuery,
+  centerCoordinates,
+}: PropertyMapProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const boundsFitRef = useRef(false);
   const [selected, setSelected] = useState<MapProperty | null>(null);
+  const initialCenterRef = useRef(centerCoordinates);
 
   useEffect(() => {
     if (!containerRef.current || !mapboxToken) return;
@@ -39,18 +47,24 @@ const PropertyMap = ({ properties, mapboxToken }: PropertyMapProps) => {
     }
     boundsFitRef.current = false;
 
+    const initialCenter = initialCenterRef.current
+      ? ([initialCenterRef.current.lng, initialCenterRef.current.lat] as [number, number])
+      : ([-99.1332, 19.4326] as [number, number]);
+
+    const initialZoom = initialCenterRef.current ? 13 : 11;
+
     mapboxgl.accessToken = mapboxToken;
     const map = new mapboxgl.Map({
       container: containerRef.current,
       style: 'mapbox://styles/mapbox/light-v11',
-      center: [-99.1332, 19.4326],
-      zoom: 11,
+      center: initialCenter,
+      zoom: initialZoom,
     });
     mapRef.current = map;
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-right');
 
-    // Fly to user's location unless properties have already set bounds
-    if (navigator.geolocation) {
+    // Fly to user's location unless properties have already set bounds OR search coordinates exist
+    if (navigator.geolocation && !initialCenterRef.current && !searchQuery) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           if (!boundsFitRef.current) {
@@ -69,7 +83,64 @@ const PropertyMap = ({ properties, mapboxToken }: PropertyMapProps) => {
       map.remove();
       mapRef.current = null;
     };
-  }, [mapboxToken]);
+  }, [mapboxToken, searchQuery]);
+
+  // Fly to centerCoordinates if they change after initialization
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !centerCoordinates) return;
+
+    boundsFitRef.current = true;
+
+    const flyToCoordinates = () => {
+      map.flyTo({
+        center: [centerCoordinates.lng, centerCoordinates.lat],
+        zoom: 13,
+        duration: 1500,
+      });
+    };
+
+    if (map.loaded()) {
+      flyToCoordinates();
+    } else {
+      map.once('load', flyToCoordinates);
+    }
+  }, [centerCoordinates]);
+
+  // Fallback: Geocode searchQuery if centerCoordinates is NOT provided but searchQuery exists
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapboxToken || !searchQuery?.trim() || centerCoordinates) return;
+
+    const geocodeAndFly = async () => {
+      try {
+        const response = await fetch(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+            searchQuery
+          )}.json?access_token=${mapboxToken}&limit=1&country=mx,us`
+        );
+        if (!response.ok) return;
+        const data = await response.json();
+        if (data?.features && data.features.length > 0) {
+          const [lng, lat] = data.features[0].center;
+          boundsFitRef.current = true;
+          map.flyTo({
+            center: [lng, lat],
+            zoom: 13,
+            duration: 1500,
+          });
+        }
+      } catch (error) {
+        console.error('Error geocoding fallback in PropertyMap:', error);
+      }
+    };
+
+    if (map.loaded()) {
+      geocodeAndFly();
+    } else {
+      map.once('load', geocodeAndFly);
+    }
+  }, [searchQuery, centerCoordinates, mapboxToken]);
 
   useEffect(() => {
     const map = mapRef.current;
