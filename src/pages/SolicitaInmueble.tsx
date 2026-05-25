@@ -15,7 +15,7 @@ const SolicitaInmueble = () => {
         <title>
           {site?.site_name
             ? `Solicita tu Inmueble | ${site.site_name}`
-            : "Solicita tu Inmueble | Raquel Meléndez"}
+            : "Solicita tu Inmueble | Raquel Meléndrez"}
         </title>
         <meta
           name="description"

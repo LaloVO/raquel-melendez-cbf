@@ -40,7 +40,7 @@ const ContactSection = () => {
       setIsSubmitting(false);
       toast({
         title: "Mensaje Enviado",
-        description: `Gracias ${name}, Raquel Meléndez se pondrá en contacto contigo a la brevedad.`,
+        description: `Gracias ${name}, Raquel Meléndrez se pondrá en contacto contigo a la brevedad.`,
       });
       setName('');
       setEmail('');
@@ -84,8 +84,8 @@ const ContactSection = () => {
               </div>
               <div>
                 <span className="block text-[9px] uppercase tracking-widest text-[#6E6259]/50 font-light">Envíame un correo</span>
-                <a href="mailto:contacto@ralquemelendez.com" className="font-medium hover:text-[#B76E4D] transition-colors">
-                  contacto@ralquemelendez.com
+                <a href="mailto:contacto@raquelmelendrez.com" className="font-medium hover:text-[#B76E4D] transition-colors">
+                  contacto@raquelmelendrez.com
                 </a>
               </div>
             </div>

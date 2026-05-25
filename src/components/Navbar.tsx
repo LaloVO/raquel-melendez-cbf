@@ -69,7 +69,7 @@ const Navbar = () => {
           to="/"
           className="font-serif text-base md:text-lg tracking-[0.25em] uppercase text-[#6E6259] hover:text-[#B76E4D] transition-colors duration-300 font-semibold flex items-center gap-1"
         >
-          {site?.site_name ? site.site_name : 'Ralque Meléndez'}
+          {site?.site_name ? site.site_name : 'Raquel Meléndrez'}
           <span className="text-[#B76E4D]">.</span>
         </Link>
 

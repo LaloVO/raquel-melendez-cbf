@@ -120,7 +120,7 @@ const MapPage = () => {
   return (
     <>
       <Helmet>
-        <title>Explorar Propiedades | Ralque Meléndez Inmobiliaria</title>
+        <title>Explorar Propiedades | Raquel Meléndrez Inmobiliaria</title>
         <meta
           name="description"
           content="Explora nuestro catálogo exclusivo de propiedades residenciales en venta y renta en México y EE.UU."

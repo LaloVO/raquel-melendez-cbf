@@ -63,7 +63,7 @@ const PropertyDetail = () => {
   return (
     <>
       <Helmet>
-        <title>{property.nombre} | {user?.nombre_usuario ?? 'Ralque Meléndez Inmobiliaria'}</title>
+        <title>{property.nombre} | {user?.nombre_usuario ?? 'Raquel Meléndrez Inmobiliaria'}</title>
         <meta name="description" content={property.descripcion ?? property.nombre} />
       </Helmet>
 
@@ -108,7 +108,7 @@ const PropertyDetail = () => {
               ))}
               {images.length < 2 && (
                 <div className="hidden md:flex flex-1 bg-[#E9DDCF]/5 items-center justify-center border border-[#E9DDCF]/30 border-dashed text-[#6E6259]/30 text-xs font-serif italic">
-                  Curaduría fotográfica Ralque
+                  Curaduría fotográfica Raquel Meléndrez
                 </div>
               )}
             </div>
@@ -207,13 +207,13 @@ const PropertyDetail = () => {
                   <div className="relative w-12 h-12 overflow-hidden bg-[#E9DDCF]/10 shrink-0">
                     <img
                       src="/raquel_portrait.png"
-                      alt="Raquel Meléndez"
+                      alt="Raquel Meléndrez"
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div>
                     <p className="font-sans font-semibold text-sm text-[#6E6259] uppercase tracking-wider">
-                      Raquel Meléndez
+                      Raquel Meléndrez
                     </p>
                     <p className="font-sans text-[10px] uppercase tracking-widest text-[#B76E4D] font-medium mt-0.5">
                       Fundadora & Asesora Principal

@@ -39,7 +39,7 @@ const Index = () => {
     <>
       <Helmet>
         <title>
-          {site?.site_name ? `${site.site_name} | Asesoría Inmobiliaria Internacional` : 'Ralque Meléndez | Inmobiliaria Boutique Internacional'}
+          {site?.site_name ? `${site.site_name} | Asesoría Inmobiliaria Internacional` : 'Raquel Meléndrez | Inmobiliaria Boutique Internacional'}
         </title>
         <meta
           name="description"

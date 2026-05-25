@@ -27,7 +27,7 @@ const Footer = () => {
             to="/"
             className="font-serif text-xl tracking-[0.2em] uppercase text-white font-semibold"
           >
-            {site?.site_name ? site.site_name : 'Ralque Meléndez'}
+            {site?.site_name ? site.site_name : 'Raquel Meléndrez'}
             <span className="text-[#B76E4D]">.</span>
           </Link>
           <p className="font-sans text-[13px] text-[#FAF7F2]/60 font-light leading-relaxed max-w-[240px]">
@@ -94,8 +94,8 @@ const Footer = () => {
           <div className="flex flex-col gap-3 font-sans text-xs text-[#FAF7F2]/70 font-light">
             <p>
               <span className="block text-[10px] uppercase tracking-widest text-[#FAF7F2]/45 mb-0.5">Email</span>
-              <a href={`mailto:${user?.email_usuario ?? 'contacto@ralquemelendez.com'}`} className="hover:text-[#B76E4D] transition-colors">
-                {user?.email_usuario ?? 'contacto@ralquemelendez.com'}
+              <a href={`mailto:${user?.email_usuario ?? 'contacto@raquelmelendrez.com'}`} className="hover:text-[#B76E4D] transition-colors">
+                {user?.email_usuario ?? 'contacto@raquelmelendrez.com'}
               </a>
             </p>
             {user?.telefono_usuario && (
@@ -115,7 +115,7 @@ const Footer = () => {
       </div>
 
       <div className="max-w-[90rem] mx-auto border-t border-[#4A3F35]/50 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] uppercase tracking-[0.2em] text-[#FAF7F2]/40 font-sans">
-        <p>© {new Date().getFullYear()} Ralque Meléndez Inmobiliaria. Todos los derechos reservados.</p>
+        <p>© {new Date().getFullYear()} Raquel Meléndrez Inmobiliaria. Todos los derechos reservados.</p>
         <p className="font-light">
           Miembro de{' '}
           <a href="https://homepty.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#B76E4D] font-semibold text-[#FAF7F2]/60 transition-colors">

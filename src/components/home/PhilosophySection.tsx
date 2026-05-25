@@ -55,7 +55,7 @@ const PhilosophySection = () => {
               isVisible ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            En Ralque Meléndez no vendemos metros cuadrados. Diseñamos futuros prósperos asesorándote estratégicamente para que tu patrimonio trabaje de manera inteligente.
+            En Raquel Meléndrez no vendemos metros cuadrados. Diseñamos futuros prósperos asesorándote estratégicamente para que tu patrimonio trabaje de manera inteligente.
           </p>
         </div>
 

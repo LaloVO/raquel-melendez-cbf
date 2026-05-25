@@ -139,7 +139,7 @@ const HeroSection = () => {
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          Ralque Meléndez · Inmobiliaria Boutique
+          Raquel Meléndrez · Inmobiliaria Boutique
         </span>
 
         {/* Big Large Editorial Headline */}

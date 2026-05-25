@@ -33,7 +33,7 @@ const AboutMeSection = () => {
           <div className="relative aspect-square md:aspect-[4/5] lg:aspect-[4/5] overflow-hidden shadow-elegant border border-white/40 bg-white/20 rounded-3xl">
             <img
               src="/raquel_portrait.png"
-              alt="Raquel Meléndez"
+              alt="Raquel Meléndrez"
               className="w-full h-full object-cover grayscale-[15%] hover:grayscale-0 transition-all duration-1000 scale-[1.01]"
               loading="lazy"
             />
@@ -70,7 +70,7 @@ const AboutMeSection = () => {
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
-              Hola, soy <strong>Raquel Meléndez</strong>. Creo firmemente que adquirir una propiedad de alta gama no se trata únicamente de "comprar metros cuadrados" o encontrar un espacio estético. Se trata de una decisión de inversión estratégica que debe alinear el resguardo de tu capital, la plusvalía futura y tu visión de vida.
+              Hola, soy <strong>Raquel Meléndrez</strong>. Creo firmemente que adquirir una propiedad de alta gama no se trata únicamente de "comprar metros cuadrados" o encontrar un espacio estético. Se trata de una decisión de inversión estratégica que debe alinear el resguardo de tu capital, la plusvalía futura y tu visión de vida.
             </p>
             <p
               className={`transition-all duration-1000 delay-400 ${
@@ -102,7 +102,7 @@ const AboutMeSection = () => {
             </button>
             <div className="flex flex-col font-sans text-xs">
               <span className="text-[#6E6259]/65 font-light">Asesoría directa</span>
-              <span className="font-semibold text-[#6E6259] tracking-wider mt-0.5">Raquel Meléndez</span>
+              <span className="font-semibold text-[#6E6259] tracking-wider mt-0.5">Raquel Meléndrez</span>
             </div>
           </div>
         </div>
