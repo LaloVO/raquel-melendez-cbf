@@ -58,11 +58,43 @@ const HeroSection = () => {
         const response = await fetch(
           `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
             locationText
-          )}.json?access_token=${mapboxToken}&limit=5&types=neighborhood,locality,place,address&country=mx,us`
+          )}.json?access_token=${mapboxToken}&limit=5&types=neighborhood,locality,place,address&country=mx,us&proximity=-99.1332,19.4326`
         );
         if (response.ok) {
           const data = await response.json();
-          setSuggestions(data.features || []);
+          let features = data.features || [];
+          
+          const queryLower = locationText.toLowerCase();
+          const looksLikeUS = queryLower.includes('usa') || 
+                              queryLower.includes('eeuu') || 
+                              queryLower.includes('ee.uu') || 
+                              queryLower.includes('estados unidos') || 
+                              queryLower.includes('united states') || 
+                              queryLower.includes('miami') || 
+                              queryLower.includes('texas') || 
+                              queryLower.includes('dallas') ||
+                              queryLower.includes('houston') ||
+                              queryLower.includes('austin') ||
+                              queryLower.includes('san antonio') ||
+                              queryLower.includes('mcallen');
+
+          if (!looksLikeUS) {
+            features = [...features].sort((a: any, b: any) => {
+              const isAMexico = a.place_name?.toLowerCase().includes('méxico') || 
+                                a.place_name?.toLowerCase().includes('mexico') ||
+                                a.context?.some((c: any) => c.short_code?.toLowerCase() === 'mx' || c.text?.toLowerCase() === 'méxico' || c.text?.toLowerCase() === 'mexico');
+                                
+              const isBMexico = b.place_name?.toLowerCase().includes('méxico') || 
+                                b.place_name?.toLowerCase().includes('mexico') ||
+                                b.context?.some((c: any) => c.short_code?.toLowerCase() === 'mx' || c.text?.toLowerCase() === 'méxico' || c.text?.toLowerCase() === 'mexico');
+
+              if (isAMexico && !isBMexico) return -1;
+              if (!isAMexico && isBMexico) return 1;
+              return 0;
+            });
+          }
+          
+          setSuggestions(features);
           setShowSuggestions(true);
         }
       } catch (error) {
@@ -116,9 +148,9 @@ const HeroSection = () => {
   };
 
   return (
-    <header className="relative w-full h-screen overflow-hidden flex flex-col justify-center px-6 md:px-12 lg:px-24">
+    <header className="relative w-full h-screen flex flex-col justify-center px-6 md:px-12 lg:px-24">
       {/* 1. Full-screen cover background with subtle golden-hour parallax */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <div
           className="w-full h-[120%] bg-cover bg-center transition-transform duration-1000 ease-out"
           style={{

@@ -32,7 +32,7 @@ const AboutMeSection = () => {
         >
           <div className="relative aspect-square md:aspect-[4/5] lg:aspect-[4/5] overflow-hidden shadow-elegant border border-white/40 bg-white/20 rounded-3xl">
             <img
-              src="/raquel_portrait.png"
+              src="/raquel.jpeg"
               alt="Raquel Meléndrez"
               className="w-full h-full object-cover grayscale-[15%] hover:grayscale-0 transition-all duration-1000 scale-[1.01]"
               loading="lazy"

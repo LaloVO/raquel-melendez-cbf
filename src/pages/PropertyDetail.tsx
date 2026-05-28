@@ -206,7 +206,7 @@ const PropertyDetail = () => {
                 <div className="flex items-center gap-4 mb-8 pb-6 border-b border-[#E9DDCF]/35">
                   <div className="relative w-12 h-12 overflow-hidden bg-[#E9DDCF]/10 shrink-0">
                     <img
-                      src="/raquel_portrait.png"
+                      src="/raquel.jpeg"
                       alt="Raquel Meléndrez"
                       className="w-full h-full object-cover"
                     />
