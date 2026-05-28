@@ -121,6 +121,8 @@ export interface LeadSubmission {
   detalles_uso?: string;
   documentos_disponibles?: string[];
   documentos_urls?: Record<string, string>;
+  cita_virtual_solicitada?: boolean;
+  cita_virtual_fecha_hora?: string;
 }
 
 export async function submitLead(lead: LeadSubmission): Promise<{ success: boolean; data: any }> {
@@ -134,4 +136,11 @@ export async function submitLead(lead: LeadSubmission): Promise<{ success: boole
     throw new Error(errorJson.error || "Error al enviar la solicitud");
   }
   return res.json();
+}
+
+export async function fetchBusySlots(): Promise<Array<{ start: string; end: string }>> {
+  const res = await fetch(`${BASE_URL}/calendar/busy-slots`, { headers: headers() });
+  if (!res.ok) throw new Error("Error al cargar horarios ocupados");
+  const json = await res.json();
+  return json.busySlots || [];
 }

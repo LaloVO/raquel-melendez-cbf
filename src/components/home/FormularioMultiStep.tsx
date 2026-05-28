@@ -29,6 +29,7 @@ import {
   Upload,
   X,
   Check,
+  Calendar,
 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
@@ -41,7 +42,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { submitLead } from "@/lib/cbf";
+import { submitLead, fetchBusySlots } from "@/lib/cbf";
 
 const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string) || "https://nxouqoyppkiqrhfzovny.supabase.co";
 const SUPABASE_ANON_KEY = (import.meta.env.VITE_SUPABASE_ANON_KEY as string) || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54b3Vxb3lwcGtpcXJoZnpvdm55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3MDQxODMsImV4cCI6MjA5NDI4MDE4M30.zDlAxuD-YISh93Y4CWTWuJJP9HAWlPru32MbAfc3dtA";
@@ -107,7 +108,7 @@ const OPCIONES_USO = [
 ];
 
 const TIPOS_DOCUMENTOS = [
-  { id: "identificacion", label: "Identificación Oficial (INE)", requerido: true },
+  { id: "identificacion", label: "Identificación Oficial (INE)", requerido: false },
   { id: "comprobante_ingresos", label: "Comprobante de Ingresos", requerido: false },
   { id: "estados_cuenta", label: "Estados de Cuenta (últimos 3 meses)", requerido: false },
   { id: "comprobante_domicilio", label: "Comprobante de Domicilio", requerido: false },
@@ -153,10 +154,7 @@ const step5Schema = z.object({
 });
 
 const step6Schema = z.object({
-  documentosDisponibles: z.array(z.string()).refine(
-    (val) => val && val.includes("identificacion"),
-    { message: "La Identificación Oficial (INE) es obligatoria para tu expediente" }
-  )
+  documentosDisponibles: z.array(z.string()).optional()
 });
 
 // Esquema completo final
@@ -182,10 +180,7 @@ const fullSchema = z.object({
   institucionCrediticia: z.string().optional(),
   usoDestino: z.enum(["vivienda_propia", "inversion", "negocio", "vacacional", "otro"]),
   detallesUso: z.string().optional(),
-  documentosDisponibles: z.array(z.string()).refine(
-    (val) => val && val.includes("identificacion"),
-    { message: "La Identificación Oficial (INE) es obligatoria para tu expediente" }
-  ),
+  documentosDisponibles: z.array(z.string()).optional(),
   documentos_urls: z.record(z.string()).optional()
 });
 
@@ -197,12 +192,33 @@ interface FormularioMultiStepProps {
   onSubmitComplete?: () => void;
 }
 
+const AVAILABLE_HOURS = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
+
+function isTimeSlotBusy(dateStr: string, hourStr: string, busySlots: Array<{ start: string; end: string }>): boolean {
+  const [hours, minutes] = hourStr.split(":").map(Number);
+  const slotStart = new Date(dateStr);
+  slotStart.setHours(hours, minutes, 0, 0);
+  const slotEnd = new Date(slotStart.getTime() + 60 * 60 * 1000); // 1 hour
+
+  return busySlots.some((slot) => {
+    const busyStart = new Date(slot.start);
+    const busyEnd = new Date(slot.end);
+    return slotStart < busyEnd && slotEnd > busyStart;
+  });
+}
+
 export default function FormularioMultiStep({ onSubmitComplete }: FormularioMultiStepProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [documentosUrls, setDocumentosUrls] = useState<Record<string, string>>({});
   const [uploadingDocs, setUploadingDocs] = useState<Record<string, boolean>>({});
+
+  const [citaVirtualSolicitada, setCitaVirtualSolicitada] = useState(false);
+  const [citaVirtualFecha, setCitaVirtualFecha] = useState("");
+  const [citaVirtualHora, setCitaVirtualHora] = useState("");
+  const [busySlots, setBusySlots] = useState<Array<{ start: string; end: string }>>([]);
+  const [isLoadingBusySlots, setIsLoadingBusySlots] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(fullSchema),
@@ -249,6 +265,24 @@ export default function FormularioMultiStep({ onSubmitComplete }: FormularioMult
       console.error("Error cargando borrador:", err);
     }
   }, [setValue]);
+
+  // Cargar horarios ocupados al entrar al paso 6
+  useEffect(() => {
+    if (currentStep === 6) {
+      setIsLoadingBusySlots(true);
+      fetchBusySlots()
+        .then((slots) => {
+          setBusySlots(slots);
+        })
+        .catch((err) => {
+          console.error("Error al cargar horarios ocupados:", err);
+          toast.error("No se pudo conectar al calendario del asesor. Mostrando todos los horarios disponibles.");
+        })
+        .finally(() => {
+          setIsLoadingBusySlots(false);
+        });
+    }
+  }, [currentStep]);
 
   const validateStep = async (step: number): Promise<boolean> => {
     let fields: (keyof FormData)[] = [];
@@ -315,6 +349,11 @@ export default function FormularioMultiStep({ onSubmitComplete }: FormularioMult
       return;
     }
 
+    if (citaVirtualSolicitada && (!citaVirtualFecha || !citaVirtualHora)) {
+      toast.error("Por favor selecciona la fecha y hora de tu cita virtual.");
+      return;
+    }
+
     setIsSubmitting(true);
     const data = getValues();
 
@@ -342,7 +381,16 @@ export default function FormularioMultiStep({ onSubmitComplete }: FormularioMult
         uso_destino: data.usoDestino,
         detalles_uso: data.detallesUso,
         documentos_disponibles: data.documentosDisponibles,
-        documentos_urls: data.documentos_urls || {}
+        documentos_urls: data.documentos_urls || {},
+        cita_virtual_solicitada: citaVirtualSolicitada,
+        cita_virtual_fecha_hora: citaVirtualSolicitada && citaVirtualFecha && citaVirtualHora
+          ? (() => {
+              const [hours, minutes] = citaVirtualHora.split(":").map(Number);
+              const d = new Date(citaVirtualFecha);
+              d.setHours(hours, minutes, 0, 0);
+              return d.toISOString();
+            })()
+          : undefined,
       };
 
       await submitLead(payload);
@@ -1132,6 +1180,96 @@ export default function FormularioMultiStep({ onSubmitComplete }: FormularioMult
             </div>
 
             <div className="space-y-6 max-w-2xl mx-auto">
+              {/* Opción de Cita Virtual */}
+              <div className="bg-white rounded-2xl p-6 border border-[#6E6259]/15 shadow-card hover:border-[#B76E4D]/30 transition-all duration-300 space-y-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 space-y-1">
+                    <h3 className="font-sans text-base font-semibold text-[#2E251E] flex items-center gap-2">
+                      <Calendar className="w-5 h-5 text-[#B76E4D]" />
+                      Prefiero primero agendar una cita virtual
+                    </h3>
+                    <p className="text-xs text-[#6E6259] leading-relaxed">
+                      Si aún no tienes todos tus documentos listos, puedes agendar una sesión de pre-calificación virtual de 1 hora con nuestro equipo.
+                    </p>
+                  </div>
+                  <Switch
+                    checked={citaVirtualSolicitada}
+                    onCheckedChange={(checked) => {
+                      setCitaVirtualSolicitada(checked);
+                      if (!checked) {
+                        setCitaVirtualFecha("");
+                        setCitaVirtualHora("");
+                      }
+                    }}
+                    className="data-[state=checked]:bg-[#B76E4D]"
+                  />
+                </div>
+
+                {citaVirtualSolicitada && (
+                  <div className="pt-4 border-t border-[#6E6259]/10 space-y-4 animate-fadeIn">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Selector de Fecha */}
+                      <div className="space-y-2">
+                        <Label className="text-xs font-semibold text-[#6E6259]">Selecciona la Fecha de tu Cita</Label>
+                        <input
+                          type="date"
+                          value={citaVirtualFecha}
+                          min={new Date().toISOString().split("T")[0]}
+                          onChange={(e) => {
+                            setCitaVirtualFecha(e.target.value);
+                            setCitaVirtualHora(""); // Reset hour when date changes
+                          }}
+                          className="w-full h-10 rounded-full border border-[#6E6259]/20 bg-white px-4 text-sm font-sans focus:border-[#B76E4D] focus:outline-none"
+                        />
+                      </div>
+
+                      {/* Selector de Horario */}
+                      <div className="space-y-2">
+                        <Label className="text-xs font-semibold text-[#6E6259]">Selecciona la Hora (Sesión de 1 hora)</Label>
+                        {citaVirtualFecha ? (
+                          isLoadingBusySlots ? (
+                            <div className="h-10 flex items-center justify-center text-xs text-[#6E6259]/60">
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin text-[#B76E4D]" />
+                              Cargando disponibilidad...
+                            </div>
+                          ) : (
+                            <div className="grid grid-cols-3 gap-2">
+                              {AVAILABLE_HOURS.map((hour) => {
+                                const isBusy = isTimeSlotBusy(citaVirtualFecha, hour, busySlots);
+                                const isSelected = citaVirtualHora === hour;
+
+                                return (
+                                  <button
+                                    key={hour}
+                                    type="button"
+                                    disabled={isBusy}
+                                    onClick={() => setCitaVirtualHora(hour)}
+                                    className={`h-9 rounded-full text-xs font-sans font-medium border transition-all duration-300
+                                      ${isBusy 
+                                        ? "bg-[#6E6259]/5 border-[#6E6259]/10 text-[#6E6259]/30 cursor-not-allowed line-through" 
+                                        : isSelected
+                                          ? "bg-[#B76E4D] border-[#B76E4D] text-white shadow-md"
+                                          : "bg-white border-[#6E6259]/20 text-[#6E6259] hover:border-[#B76E4D] hover:bg-[#FAF7F2]"
+                                      }
+                                    `}
+                                  >
+                                    {hour}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          )
+                        ) : (
+                          <div className="h-10 flex items-center justify-center border border-dashed border-[#6E6259]/25 rounded-full text-xs text-[#6E6259]/60 bg-transparent">
+                            Por favor primero selecciona una fecha
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <div className="bg-[#FAF7F2]/60 border border-[#6E6259]/10 rounded-2xl p-5 md:p-6 shadow-card space-y-4">
                 <h3 className="font-sans text-base font-semibold text-[#2E251E] flex items-center gap-2">
                   <FileText className="w-5 h-5 text-[#B76E4D]" />
