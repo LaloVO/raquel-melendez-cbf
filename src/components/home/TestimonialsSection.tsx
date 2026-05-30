@@ -5,31 +5,28 @@ interface Testimonial {
   id: string;
   quote: string;
   author: string;
-  role: string;
+  role?: string;
   location: string;
 }
 
 const testimonials: Testimonial[] = [
   {
     id: '1',
-    quote: "La asesoría de Raquel fue clave para expandir nuestro portafolio a Estados Unidos. Su entendimiento del mercado en Miami y la CDMX nos dio absoluta confianza.",
+    quote: "Raquel nos ayudó a entender el mercado con mucha claridad y estrategia. Gracias a su acompañamiento pudimos tomar una decisión de inversión con mucha más seguridad y confianza.",
     author: "Alejandro Ruiz",
-    role: "CEO de Inversiones Aurum",
-    location: "Lomas de Chapultepec, CDMX / Miami, FL"
+    location: "Ciudad de México / Miami"
   },
   {
     id: '2',
-    quote: "Espectacular nivel de profesionalismo. Encontró una residencia fuera del mercado que superaba nuestras expectativas en menos de dos semanas. Totalmente recomendada.",
-    author: "Sofía & Roberto Beck",
-    role: "Inversionistas Privados",
-    location: "Valle de Bravo, EdoMex"
+    quote: "Lo que más valoramos fue su manera de acompañarnos durante todo el proceso. Siempre sentimos claridad, confianza y una asesoría realmente personalizada.",
+    author: "Sofía & Roberto",
+    location: "Valle de Bravo, México"
   },
   {
     id: '3',
-    quote: "El acompañamiento integral, incluyendo la asesoría de diseño con acabados Masaroca, transformó por completo nuestra decisión de compra. Un servicio de guante blanco.",
-    author: "Dra. Natalia Valenzuela",
-    role: "Coleccionista de Arte",
-    location: "Polanco, CDMX"
+    quote: "La integración entre inversión, diseño y acabados fue completamente diferente a cualquier experiencia inmobiliaria que habíamos tenido. Su visión aportó muchísimo valor a nuestro proyecto.",
+    author: "Natalia Valenzuela",
+    location: "Polanco, Ciudad de México"
   }
 ];
 
@@ -84,9 +81,11 @@ const TestimonialsSection = () => {
                 <span className="block font-sans font-semibold text-xs text-[#6E6259] uppercase tracking-wider">
                   {item.author}
                 </span>
-                <span className="block font-sans text-[10px] text-[#6E6259]/60 uppercase tracking-widest mt-0.5">
-                  {item.role}
-                </span>
+                {item.role && (
+                  <span className="block font-sans text-[10px] text-[#6E6259]/60 uppercase tracking-widest mt-0.5">
+                    {item.role}
+                  </span>
+                )}
                 <span className="block font-sans text-[9px] text-[#B76E4D] tracking-widest uppercase mt-2 font-medium">
                   {item.location}
                 </span>

@@ -53,15 +53,15 @@ const AboutMeSection = () => {
           </span>
           
           <h2
-            className={`font-serif text-3xl sm:text-4xl md:text-5xl leading-tight font-light mb-8 transition-all duration-1000 delay-200 ${
+            className={`font-serif text-2xl sm:text-3xl md:text-4xl leading-snug font-light mb-8 transition-all duration-1000 delay-200 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
-            Te ayudo a tomar
+            Creo que una buena inversión comienza con una <span className="italic font-semibold text-[#B76E4D]">decisión bien analizada</span>.
             <br />
-            <span className="italic font-semibold text-[#B76E4D]">decisiones inteligentes</span>
-            <br />
-            inmobiliarias.
+            <span className="text-base sm:text-lg md:text-xl font-sans font-light text-[#6E6259]/80 block mt-4 leading-relaxed">
+              Por eso acompaño a cada cliente desde una perspectiva estratégica, entendiendo sus objetivos, su patrimonio y la visión que tiene para su futuro.
+            </span>
           </h2>
 
           <div className="flex flex-col gap-6 font-sans text-sm sm:text-base font-light text-[#6E6259]/80 leading-relaxed">
@@ -70,21 +70,14 @@ const AboutMeSection = () => {
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
-              Hola, soy <strong>Raquel Meléndrez</strong>. Creo firmemente que adquirir una propiedad de alta gama no se trata únicamente de "comprar metros cuadrados" o encontrar un espacio estético. Se trata de una decisión de inversión estratégica que debe alinear el resguardo de tu capital, la plusvalía futura y tu visión de vida.
+              Más que vender propiedades, mi propósito es ayudarte a tomar decisiones inmobiliarias con claridad, confianza y visión a largo plazo.
             </p>
             <p
               className={`transition-all duration-1000 delay-400 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
-              Con más de una década de experiencia y presencia consolidada tanto en la <strong>Ciudad de México</strong> como en <strong>Estados Unidos (Miami & Texas)</strong>, acompaño a inversionistas sofisticados y a familias exigentes a navegar el mercado boutique. Mi misión es entregarte absoluta claridad, datos predictivos rigurosos y una curaduría de propiedades inigualable.
-            </p>
-            <p
-              className={`transition-all duration-1000 delay-500 ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-              }`}
-            >
-              Además de la asesoría financiera tradicional, integro un enfoque único en el diseño y los acabados artesanales a través de <strong>Masaroca</strong>, asegurando que cada propiedad sea tanto un activo rentable como una obra de arte habitable.
+              Además, integro una visión innovadora del diseño y la construcción a través de <strong>Masaroca</strong>, una tecnología de alto desempeño que combina funcionalidad estructural, posibilidades creativas y valor estético para transformar la manera en que concebimos los espacios.
             </p>
           </div>
 
@@ -98,11 +91,10 @@ const AboutMeSection = () => {
               onClick={handleContactScroll}
               className="px-8 py-3.5 bg-[#B76E4D] text-[#FAF7F2] font-sans uppercase text-[10px] tracking-[0.25em] font-semibold rounded-full hover:bg-[#6E6259] transition-colors duration-500 shadow-md"
             >
-              Hablemos hoy
+              hablemos hoy
             </button>
             <div className="flex flex-col font-sans text-xs">
-              <span className="text-[#6E6259]/65 font-light">Asesoría directa</span>
-              <span className="font-semibold text-[#6E6259] tracking-wider mt-0.5">Raquel Meléndrez</span>
+              <span className="font-semibold text-[#6E6259] tracking-wider">Raquel Meléndrez</span>
             </div>
           </div>
         </div>

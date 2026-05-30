@@ -57,7 +57,7 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <button onClick={() => handleNavClick('/#masaroca')} className="hover:text-white transition-colors">
+              <button onClick={() => handleNavClick('/masaroca')} className="hover:text-white transition-colors">
                 Masaroca
               </button>
             </li>

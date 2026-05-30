@@ -50,13 +50,20 @@ const PhilosophySection = () => {
               isVisible ? 'w-full' : 'w-0'
             }`}
           />
-          <p
+          <div
             className={`font-sans text-xs sm:text-sm text-[#6E6259]/70 leading-relaxed font-light mt-8 transition-all duration-1000 delay-400 ${
               isVisible ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            En Raquel Meléndrez no vendemos metros cuadrados. Diseñamos futuros prósperos asesorándote estratégicamente para que tu patrimonio trabaje de manera inteligente.
-          </p>
+            <p className="font-semibold text-[#6E6259] mb-4">
+              No vendemos propiedades.
+              <br />
+              <span className="font-normal text-[#6E6259]/80">Guiamos decisiones de inversión con visión estratégica y valor a largo plazo.</span>
+            </p>
+            <p>
+              Porque detrás de cada inversión existe un proyecto de vida, un patrimonio y un futuro que merece construirse con inteligencia y confianza.
+            </p>
+          </div>
         </div>
 
         {/* Right Side: Misión & Visión Grid */}
@@ -75,11 +82,8 @@ const PhilosophySection = () => {
               </span>
             </div>
             <div className="md:col-span-9">
-              <p className="font-serif text-xl sm:text-2xl text-[#6E6259] leading-relaxed font-light mb-4">
-                Empoderar a inversionistas y familias a tomar <span className="font-semibold text-[#B76E4D]">decisiones patrimoniales seguras</span> y rentables en los mercados más dinámicos de México y EE.UU.
-              </p>
-              <p className="font-sans text-sm text-[#6E6259]/75 font-light leading-relaxed">
-                A través de un análisis cuantitativo de plusvalía, acceso a preventas exclusivas fuera de mercado y una profunda comprensión humana de tus metas, garantizamos transacciones fluidas y estratégicas.
+              <p className="font-serif text-xl sm:text-2xl text-[#6E6259] leading-relaxed font-light">
+                Acompañar a cada cliente a tomar decisiones patrimoniales con <span className="font-semibold text-[#B76E4D]">claridad, estrategia y confianza</span>, creando inversiones con visión y valor a largo plazo.
               </p>
             </div>
           </div>
@@ -99,11 +103,8 @@ const PhilosophySection = () => {
               </span>
             </div>
             <div className="md:col-span-9">
-              <p className="font-serif text-xl sm:text-2xl text-[#6E6259] leading-relaxed font-light mb-4">
-                Ser la firma boutique líder en asesoría patrimonial integral, uniendo de manera armoniosa el <span className="italic">lujo habitacional</span>, el arte del revestimiento Masaroca y las finanzas inteligentes.
-              </p>
-              <p className="font-sans text-sm text-[#6E6259]/75 font-light leading-relaxed">
-                Visualizamos un ecosistema donde cada cliente adquiere no solo una residencia de primer nivel, sino una obra de arte viviente recubierta con acabados artesanales sofisticados, respaldada por un rendimiento sólido del capital.
+              <p className="font-serif text-xl sm:text-2xl text-[#6E6259] leading-relaxed font-light">
+                Convertirme en una referencia de confianza en el sector inmobiliario y de inversión, reconocida por transformar la manera en que las personas toman decisiones patrimoniales: con <span className="italic font-semibold text-[#B76E4D]">estrategia, visión</span> y un acompañamiento genuinamente humano.
               </p>
             </div>
           </div>

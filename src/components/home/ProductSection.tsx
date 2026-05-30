@@ -38,55 +38,72 @@ const ProductSection = () => {
               isVisible ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            Producto Exclusivo · Recubrimiento Premium
+            Innovación Constructiva Orgullosamente Mexicana
           </span>
           
           <h2
-            className={`font-serif text-3xl sm:text-4xl md:text-5xl leading-tight font-light mb-8 transition-all duration-1000 delay-200 ${
+            className={`font-serif text-2xl sm:text-3xl md:text-4xl leading-tight font-light mb-8 transition-all duration-1000 delay-200 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
-            Masaroca: El arte
+            MasaRoca: Redefine la
             <br />
-            <span className="italic font-semibold text-[#B76E4D]">de esculpir</span>
+            <span className="italic font-semibold text-[#B76E4D]">forma de construir</span>
             <br />
-            tus muros.
+            y crear espacios.
           </h2>
 
-          <div className="flex flex-col gap-6 font-sans text-sm sm:text-base font-light text-[#6E6259]/80 leading-relaxed">
+          <div className="flex flex-col gap-6 font-sans text-sm font-light text-[#6E6259]/80 leading-relaxed">
             <p
               className={`transition-all duration-1000 delay-300 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
-              <strong>Masaroca</strong> es un revestimiento mineral artesanal de alta gama diseñado para convertir cualquier superficie en una obra de arte orgánica. Formulado con minerales puros y arenas seleccionadas, aporta una textura escultural tridimensional única que reacciona con la luz del día de manera poética.
+              <strong>MasaRoca</strong> es Tecnología Mexicana de Alto Desempeño que combina resistencia estructural, impermeabilidad y libertad de modelado para aplicaciones arquitectónicas, constructivas y artísticas.
             </p>
             <p
               className={`transition-all duration-1000 delay-400 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
-              Bajo la curaduría estética de nuestra firma, aplicamos este producto para dotar a los muros de un carácter sofisticado y atemporal, aumentando drásticamente la percepción premium del inmueble.
+              Su composición de alta resistencia permite moldearlo manualmente sin necesidad de moldes o cimbras, logrando soluciones constructivas duraderas, resistentes al fuego y a la humedad, mientras optimiza procesos, reduce tiempos de ejecución y disminuye costos.
+            </p>
+            <p
+              className={`transition-all duration-1000 delay-500 ${
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+              }`}
+            >
+              Desde restauración arquitectónica y construcción estructural, hasta diseño, texturas y escultura, MasaRoca combina innovación, funcionalidad y libertad creativa en un solo material.
             </p>
           </div>
 
           <div
-            className={`mt-10 grid grid-cols-2 gap-8 border-t border-[#E9DDCF] pt-8 w-full transition-all duration-1000 delay-500 ${
+            className={`mt-8 border-t border-[#E9DDCF] pt-8 w-full transition-all duration-1000 delay-600 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
-            <div>
-              <span className="block font-serif text-lg text-[#B76E4D]">100% Orgánico</span>
-              <span className="block text-[10px] uppercase tracking-widest text-[#6E6259]/65 font-light mt-1">
-                Minerales puros sin químicos
-              </span>
-            </div>
-            <div>
-              <span className="block font-serif text-lg text-[#B76E4D]">Aplicación Única</span>
-              <span className="block text-[10px] uppercase tracking-widest text-[#6E6259]/65 font-light mt-1">
-                Hecho a mano por maestros artesanos
-              </span>
-            </div>
+            <ul className="flex flex-col gap-3.5 font-sans text-xs text-[#6E6259]/85 font-light">
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 bg-[#B76E4D] rounded-full mt-1.5 shrink-0" />
+                <span>Tecnología mineral de alto desempeño</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 bg-[#B76E4D] rounded-full mt-1.5 shrink-0" />
+                <span>Moldeable sin necesidad de moldes o cimbras</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 bg-[#B76E4D] rounded-full mt-1.5 shrink-0" />
+                <span>Alta resistencia estructural e impermeabilidad</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 bg-[#B76E4D] rounded-full mt-1.5 shrink-0" />
+                <span>Aplicaciones artesanales y acabados únicos</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 bg-[#B76E4D] rounded-full mt-1.5 shrink-0" />
+                <span>Soluciones para construcción, restauración y diseño</span>
+              </li>
+            </ul>
           </div>
         </div>
 

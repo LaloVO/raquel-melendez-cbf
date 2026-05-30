@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import MapPage from "./pages/MapPage";
 import PropertyDetail from "./pages/PropertyDetail";
 import SolicitaInmueble from "./pages/SolicitaInmueble";
+import MasarocaPage from "./pages/Masaroca";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/mapa" element={<MapPage />} />
             <Route path="/properties/:id" element={<PropertyDetail />} />
             <Route path="/solicita-inmueble" element={<SolicitaInmueble />} />
+            <Route path="/masaroca" element={<MasarocaPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

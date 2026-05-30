@@ -73,7 +73,7 @@ const ContactSection = () => {
             estratégica.
           </h2>
           <p className="font-sans text-xs sm:text-sm text-[#6E6259]/75 font-light leading-relaxed mb-10">
-            Completa el formulario para coordinar una llamada de valoración patrimonial privada. Analizaremos tus metas, presupuesto y seleccionaremos propiedades curadas fuera del mercado.
+            Completa el formulario para coordinar una asesoría personalizada. Conoceré tus objetivos, presupuesto y visión de inversión para ayudarte a encontrar oportunidades alineadas con tu patrimonio y futuro.
           </p>
 
           {/* Quick contact list - Rounded Icons */}
@@ -95,9 +95,9 @@ const ContactSection = () => {
                 <MapPin className="w-4 h-4" />
               </div>
               <div>
-                <span className="block text-[9px] uppercase tracking-widest text-[#6E6259]/50 font-light">Ubicación Boutique</span>
+                <span className="block text-[9px] uppercase tracking-widest text-[#6E6259]/50 font-light">Ubicación</span>
                 <span className="font-medium">
-                  Lomas de Chapultepec, CDMX / Brickell, Miami
+                  Cd. De los Deportes, Benito Juárez, Ciudad de México.
                 </span>
               </div>
             </div>
@@ -169,7 +169,7 @@ const ContactSection = () => {
               <textarea
                 id="form-message"
                 rows={4}
-                placeholder="Platícame sobre tu visión de inversión o propiedad de interés..."
+                placeholder="Cuéntame sobre tus objetivos de inversión o la propiedad que estás buscando…"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 className={textareaClass}
@@ -183,8 +183,12 @@ const ContactSection = () => {
               className="w-full py-4 mt-2 bg-[#B76E4D] text-white hover:bg-[#6E6259] disabled:bg-[#B76E4D]/60 transition-all duration-300 font-sans uppercase text-[10px] tracking-[0.25em] font-semibold rounded-full flex items-center justify-center gap-2 shadow-md hover:-translate-y-0.5"
             >
               <Send className="w-3.5 h-3.5" />
-              {isSubmitting ? 'Enviando Asesoría...' : 'Enviar Solicitud Privada'}
+              {isSubmitting ? 'Agendando...' : 'Agendar asesoría'}
             </button>
+
+            <p className="text-center font-sans text-[10px] text-[#6E6259]/60 mt-2 leading-relaxed font-light">
+              Cada conversación comienza entendiendo tu visión y objetivos a largo plazo.
+            </p>
 
           </form>
         </div>

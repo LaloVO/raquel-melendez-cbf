@@ -164,15 +164,7 @@ const HeroSection = () => {
 
       {/* 3. Main Content Container: Left-Aligned Editorial Focus */}
       <div className="relative z-10 w-full max-w-[90rem] mx-auto flex flex-col items-start mt-12 md:mt-20">
-        
-        {/* Small Brand Badge */}
-        <span
-          className={`text-[#B76E4D] text-[10px] sm:text-xs uppercase tracking-[0.4em] font-semibold block mb-6 transition-all duration-1000 delay-100 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
-          Raquel Meléndrez · Inmobiliaria Boutique
-        </span>
+
 
         {/* Big Large Editorial Headline */}
         <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-[1.1] text-[#FAF7F2] font-light max-w-4xl mb-12">
@@ -304,6 +296,14 @@ const HeroSection = () => {
             Buscar
           </button>
         </form>
+
+        <p
+          className={`mt-6 text-xs sm:text-sm font-sans tracking-wide font-light text-white/70 max-w-2xl transition-all duration-1000 delay-600 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}
+        >
+          Asesoría estratégica para inversiones inmobiliarias y decisiones patrimoniales con visión.
+        </p>
 
       </div>
     </header>

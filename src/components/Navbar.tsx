@@ -24,7 +24,7 @@ const Navbar = () => {
     { href: '/#mision', label: 'Misión' },
     { href: '/#vision', label: 'Visión' },
     { href: '/mapa', label: 'Inmuebles' },
-    { href: '/#masaroca', label: 'Masaroca' },
+    { href: '/masaroca', label: 'Masaroca' },
     { href: '/#cursos', label: 'Cursos' },
     { href: '/#contacto', label: 'Contacto' },
   ];
