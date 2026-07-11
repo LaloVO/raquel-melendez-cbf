@@ -66,8 +66,8 @@ const CoursesSection = () => {
           </h2>
           <div className="w-12 h-[1px] bg-[#6E6259]/30 mt-6 mb-6" />
           
-          <div className="font-sans text-xs sm:text-sm text-[#6E6259]/75 font-light leading-relaxed flex flex-col gap-4 max-w-2xl">
-            <p className="font-semibold text-[#6E6259] text-sm sm:text-base">
+          <div className="font-sans text-base sm:text-lg md:text-xl text-[#6E6259]/75 font-light leading-relaxed flex flex-col gap-4 max-w-2xl text-justify">
+            <p className="font-semibold text-[#6E6259]">
               Un espacio de formación enfocado en inversiones inteligentes, visión patrimonial y profesionalización estratégica dentro del sector inmobiliario.
             </p>
             <p>
@@ -98,7 +98,7 @@ const CoursesSection = () => {
                   <h3 className="font-serif text-xl text-[#6E6259] font-normal mb-4 leading-snug">
                     {course.title}
                   </h3>
-                  <p className="font-sans text-xs sm:text-sm text-[#6E6259]/75 font-light leading-relaxed mb-6">
+                  <p className="font-sans text-xs sm:text-sm text-[#6E6259]/75 font-light leading-relaxed text-justify mb-6">
                     {course.description}
                   </p>
                 </div>

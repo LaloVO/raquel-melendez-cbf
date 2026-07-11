@@ -298,7 +298,7 @@ const HeroSection = () => {
         </form>
 
         <p
-          className={`mt-6 text-xs sm:text-sm font-sans tracking-wide font-light text-white/70 max-w-2xl transition-all duration-1000 delay-600 ${
+          className={`mt-6 text-base sm:text-lg md:text-xl font-sans tracking-wide font-light text-white/70 max-w-2xl text-justify transition-all duration-1000 delay-600 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >

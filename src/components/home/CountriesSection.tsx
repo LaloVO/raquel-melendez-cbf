@@ -9,7 +9,6 @@ interface CountryConfig {
   description: string;
   image: string;
   cities: string[];
-  stats: { label: string; value: string }[];
   searchQuery: string;
 }
 
@@ -20,11 +19,7 @@ const countries: CountryConfig[] = [
     subtitle: 'Un mercado lleno de oportunidades para construir patrimonio con visión a largo plazo.',
     description: 'Desde desarrollos con alta plusvalía hasta propiedades con valor arquitectónico y potencial de inversión, acompaño a cada cliente a identificar oportunidades alineadas con sus objetivos, estilo de vida y estrategia patrimonial.',
     image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200&auto=format&fit=crop',
-    cities: ['Ciudad de México (Lomas & Polanco)', 'Monterrey (San Pedro)', 'Riviera Maya (Tulum & Cancún)'],
-    stats: [
-      { label: 'Plusvalía Anual Promedio', value: '+8.4%' },
-      { label: 'Proyectos en Portafolio', value: '45+' }
-    ],
+    cities: ['Ciudad de México', 'Monterrey', 'Riviera Maya'],
     searchQuery: 'colonia=lomas&colonia=polanco'
   },
   {
@@ -33,11 +28,7 @@ const countries: CountryConfig[] = [
     subtitle: 'Invertir en el extranjero representa una oportunidad para diversificar patrimonio, acceder a mercados estratégicos y construir valor con una visión global.',
     description: 'Acompaño a cada cliente a explorar oportunidades inmobiliarias en el extranjero con claridad, análisis y una asesoría cercana enfocada en decisiones patrimoniales inteligentes y sostenibles a largo plazo.',
     image: '', // No se usa directamente porque renderizamos el grid
-    cities: ['Europa (España - Madrid)', 'Estados Unidos (Florida)', 'Medio Oriente (Dubai)', 'El Caribe & Latinoamérica'],
-    stats: [
-      { label: 'Destinos Clave', value: '6 Regiones' },
-      { label: 'Asesoría Global', value: 'Multidivisa' }
-    ],
+    cities: ['Europa', 'Estados Unidos', 'Medio Oriente', 'El Caribe & Latinoamérica'],
     searchQuery: ''
   }
 ];
@@ -52,7 +43,7 @@ const destinations = [
   {
     name: 'USA',
     region: 'Florida',
-    image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=400&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1535498730771-e735b998cd64?q=80&w=400&auto=format&fit=crop',
     message: 'Hola Raquel, me interesa invertir en Estados Unidos (Florida).'
   },
   {
@@ -70,13 +61,13 @@ const destinations = [
   {
     name: 'Panamá',
     region: 'Panamá',
-    image: 'https://images.unsplash.com/photo-1533550604246-85544851b492?q=80&w=400&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?q=80&w=400&auto=format&fit=crop',
     message: 'Hola Raquel, me interesa invertir en Panamá.'
   },
   {
     name: 'Colombia',
     region: 'Cartagena',
-    image: 'https://images.unsplash.com/photo-1583996260525-141a77455b6c?q=80&w=400&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1536308037887-165852797016?q=80&w=400&auto=format&fit=crop',
     message: 'Hola Raquel, me interesa invertir en Colombia.'
   }
 ];
@@ -122,7 +113,7 @@ const CountriesSection = () => {
               México & Extranjero
             </h2>
           </div>
-          <p className="font-sans text-sm text-[#6E6259]/70 max-w-xl font-light leading-relaxed">
+          <p className="font-sans text-base sm:text-lg md:text-xl text-[#6E6259]/70 max-w-xl font-light leading-relaxed text-justify">
             Acompañando inversiones y decisiones patrimoniales en México y el extranjero, con una visión estratégica, cercana y enfocada en oportunidades de valor a largo plazo.
           </p>
         </div>
@@ -157,11 +148,11 @@ const CountriesSection = () => {
                         />
                         <div className="absolute inset-0 bg-black/15 group-hover/item:bg-black/5 transition-colors" />
                       </div>
-                      <div className="bg-[#FAF7F2]/95 backdrop-blur-sm py-1.5 px-1 text-center border-t border-[#E9DDCF]/20">
-                        <span className="block font-sans text-[8px] sm:text-[9px] uppercase tracking-wider font-bold text-[#6E6259] group-hover/item:text-[#B76E4D] transition-colors truncate">
+                      <div className="bg-[#FAF7F2]/95 backdrop-blur-sm py-2 px-2 text-center border-t border-[#E9DDCF]/20">
+                        <span className="block font-sans text-xs sm:text-sm uppercase tracking-wider font-bold text-[#6E6259] group-hover/item:text-[#B76E4D] transition-colors truncate">
                           {dest.name}
                         </span>
-                        <span className="block font-serif italic text-[7px] sm:text-[8px] text-[#6E6259]/65 truncate leading-none mt-0.5">
+                        <span className="block font-serif italic text-[10px] sm:text-xs text-[#6E6259]/65 truncate leading-none mt-1">
                           {dest.region}
                         </span>
                       </div>
@@ -189,19 +180,19 @@ const CountriesSection = () => {
               {/* Text Description */}
               <div className="p-8 flex-1 flex flex-col justify-between">
                 <div>
-                  <span className="block font-serif italic text-sm text-[#B76E4D] mb-3">
+                  <span className="block font-serif italic text-lg sm:text-xl text-[#B76E4D] mb-3">
                     {country.subtitle}
                   </span>
-                  <p className="font-sans text-xs sm:text-sm text-[#6E6259]/75 font-light leading-relaxed mb-6">
+                  <p className="font-sans text-base sm:text-lg md:text-xl text-[#6E6259]/75 font-light leading-relaxed text-justify mb-6">
                     {country.description}
                   </p>
 
                   {/* Regional highlights */}
                   <div className="mb-6">
-                    <span className="block text-[10px] uppercase tracking-widest font-sans font-bold text-[#6E6259] mb-3">
+                    <span className="block text-[11px] sm:text-xs uppercase tracking-widest font-sans font-bold text-[#6E6259] mb-3">
                       {country.id === 'ext' ? 'Regiones Destacadas' : 'Regiones Clave'}
                     </span>
-                    <ul className="flex flex-col gap-2 font-sans text-xs text-[#6E6259]/80 font-light">
+                    <ul className="flex flex-col gap-2 font-sans text-xs sm:text-sm text-[#6E6259]/80 font-light">
                       {country.cities.map((city, idx) => (
                         <li key={idx} className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 bg-[#B76E4D]" />
@@ -209,20 +200,6 @@ const CountriesSection = () => {
                         </li>
                       ))}
                     </ul>
-                  </div>
-
-                  {/* Stats Grid */}
-                  <div className="grid grid-cols-2 gap-4 border-t border-[#E9DDCF]/30 pt-6 mb-8">
-                    {country.stats.map((stat, idx) => (
-                      <div key={idx}>
-                        <span className="block text-xl md:text-2xl font-serif text-[#B76E4D] font-normal">
-                          {stat.value}
-                        </span>
-                        <span className="block text-[9px] uppercase tracking-widest text-[#6E6259]/60 font-light mt-0.5">
-                          {stat.label}
-                        </span>
-                      </div>
-                    ))}
                   </div>
                 </div>
 

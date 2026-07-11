@@ -51,7 +51,7 @@ const PhilosophySection = () => {
             }`}
           />
           <div
-            className={`font-sans text-xs sm:text-sm text-[#6E6259]/70 leading-relaxed font-light mt-8 transition-all duration-1000 delay-400 ${
+            className={`font-sans text-base sm:text-lg md:text-xl text-[#6E6259]/70 leading-relaxed font-light mt-8 text-justify transition-all duration-1000 delay-400 ${
               isVisible ? 'opacity-100' : 'opacity-0'
             }`}
           >
@@ -82,7 +82,7 @@ const PhilosophySection = () => {
               </span>
             </div>
             <div className="md:col-span-9">
-              <p className="font-serif text-xl sm:text-2xl text-[#6E6259] leading-relaxed font-light">
+              <p className="font-serif text-xl sm:text-2xl text-[#6E6259] leading-relaxed font-light text-justify">
                 Acompañar a cada cliente a tomar decisiones patrimoniales con <span className="font-semibold text-[#B76E4D]">claridad, estrategia y confianza</span>, creando inversiones con visión y valor a largo plazo.
               </p>
             </div>
@@ -103,7 +103,7 @@ const PhilosophySection = () => {
               </span>
             </div>
             <div className="md:col-span-9">
-              <p className="font-serif text-xl sm:text-2xl text-[#6E6259] leading-relaxed font-light">
+              <p className="font-serif text-xl sm:text-2xl text-[#6E6259] leading-relaxed font-light text-justify">
                 Convertirme en una referencia de confianza en el sector inmobiliario y de inversión, reconocida por transformar la manera en que las personas toman decisiones patrimoniales: con <span className="italic font-semibold text-[#B76E4D]">estrategia, visión</span> y un acompañamiento genuinamente humano.
               </p>
             </div>

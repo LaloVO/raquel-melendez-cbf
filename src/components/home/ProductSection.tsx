@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ProductSection = () => {
+  const navigate = useNavigate();
   const sectionRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [hoveredSide, setHoveredSide] = useState<'left' | 'right' | null>(null);
@@ -42,18 +44,20 @@ const ProductSection = () => {
           </span>
           
           <h2
-            className={`font-serif text-2xl sm:text-3xl md:text-4xl leading-tight font-light mb-8 transition-all duration-1000 delay-200 ${
+            className={`font-serif text-2xl sm:text-3xl md:text-4xl leading-tight font-light mb-8 hover:text-[#B76E4D]/80 transition-colors duration-300 cursor-pointer transition-all duration-1000 delay-200 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
-            MasaRoca: Redefine la
-            <br />
-            <span className="italic font-semibold text-[#B76E4D]">forma de construir</span>
-            <br />
-            y crear espacios.
+            <Link to="/masaroca">
+              MasaRoca: Redefine la
+              <br />
+              <span className="italic font-semibold text-[#B76E4D]">forma de construir</span>
+              <br />
+              y crear espacios.
+            </Link>
           </h2>
 
-          <div className="flex flex-col gap-6 font-sans text-sm font-light text-[#6E6259]/80 leading-relaxed">
+          <div className="flex flex-col gap-6 font-sans text-base sm:text-lg md:text-xl font-light text-[#6E6259]/80 leading-relaxed text-justify">
             <p
               className={`transition-all duration-1000 delay-300 ${
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
@@ -82,25 +86,25 @@ const ProductSection = () => {
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
-            <ul className="flex flex-col gap-3.5 font-sans text-xs text-[#6E6259]/85 font-light">
-              <li className="flex items-start gap-2.5">
-                <span className="w-1.5 h-1.5 bg-[#B76E4D] rounded-full mt-1.5 shrink-0" />
-                <span>Tecnología mineral de alto desempeño</span>
+            <ul className="flex flex-col gap-4 font-sans text-sm sm:text-base text-[#6E6259]/85 font-light">
+              <li className="flex items-start gap-3">
+                <span className="w-2 h-2 bg-[#B76E4D] rounded-full mt-2 shrink-0" />
+                <span>Tecnología de alto desempeño</span>
               </li>
-              <li className="flex items-start gap-2.5">
-                <span className="w-1.5 h-1.5 bg-[#B76E4D] rounded-full mt-1.5 shrink-0" />
+              <li className="flex items-start gap-3">
+                <span className="w-2 h-2 bg-[#B76E4D] rounded-full mt-2 shrink-0" />
                 <span>Moldeable sin necesidad de moldes o cimbras</span>
               </li>
-              <li className="flex items-start gap-2.5">
-                <span className="w-1.5 h-1.5 bg-[#B76E4D] rounded-full mt-1.5 shrink-0" />
+              <li className="flex items-start gap-3">
+                <span className="w-2 h-2 bg-[#B76E4D] rounded-full mt-2 shrink-0" />
                 <span>Alta resistencia estructural e impermeabilidad</span>
               </li>
-              <li className="flex items-start gap-2.5">
-                <span className="w-1.5 h-1.5 bg-[#B76E4D] rounded-full mt-1.5 shrink-0" />
+              <li className="flex items-start gap-3">
+                <span className="w-2 h-2 bg-[#B76E4D] rounded-full mt-2 shrink-0" />
                 <span>Aplicaciones artesanales y acabados únicos</span>
               </li>
-              <li className="flex items-start gap-2.5">
-                <span className="w-1.5 h-1.5 bg-[#B76E4D] rounded-full mt-1.5 shrink-0" />
+              <li className="flex items-start gap-3">
+                <span className="w-2 h-2 bg-[#B76E4D] rounded-full mt-2 shrink-0" />
                 <span>Soluciones para construcción, restauración y diseño</span>
               </li>
             </ul>
@@ -117,6 +121,7 @@ const ProductSection = () => {
             
             {/* Left/Top Side: Textured Finish */}
             <div
+              onClick={() => navigate('/masaroca')}
               onMouseEnter={() => setHoveredSide('left')}
               onMouseLeave={() => setHoveredSide(null)}
               className="absolute inset-0 z-10 transition-all duration-700 ease-in-out cursor-pointer"
@@ -144,6 +149,7 @@ const ProductSection = () => {
 
             {/* Right/Bottom Side: Smooth Elegant Finish */}
             <div
+              onClick={() => navigate('/masaroca')}
               onMouseEnter={() => setHoveredSide('right')}
               onMouseLeave={() => setHoveredSide(null)}
               className="absolute inset-0 transition-all duration-700 ease-in-out cursor-pointer"

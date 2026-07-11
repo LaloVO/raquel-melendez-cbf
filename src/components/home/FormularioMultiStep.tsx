@@ -194,10 +194,18 @@ interface FormularioMultiStepProps {
 
 const AVAILABLE_HOURS = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
 
-function isTimeSlotBusy(dateStr: string, hourStr: string, busySlots: Array<{ start: string; end: string }>): boolean {
+function buildLocalSlotStart(dateStr: string, hourStr: string): Date {
+  // dateStr = "YYYY-MM-DD" from <input type="date">. Parsing it directly with
+  // `new Date(dateStr)` treats it as UTC midnight, which shifts to the previous
+  // calendar day in any timezone behind UTC (e.g. Mexico, UTC-6). Build the
+  // Date from its numeric parts instead so it's always anchored to local time.
+  const [year, month, day] = dateStr.split("-").map(Number);
   const [hours, minutes] = hourStr.split(":").map(Number);
-  const slotStart = new Date(dateStr);
-  slotStart.setHours(hours, minutes, 0, 0);
+  return new Date(year, month - 1, day, hours, minutes, 0, 0);
+}
+
+function isTimeSlotBusy(dateStr: string, hourStr: string, busySlots: Array<{ start: string; end: string }>): boolean {
+  const slotStart = buildLocalSlotStart(dateStr, hourStr);
   const slotEnd = new Date(slotStart.getTime() + 60 * 60 * 1000); // 1 hour
 
   return busySlots.some((slot) => {
@@ -205,6 +213,11 @@ function isTimeSlotBusy(dateStr: string, hourStr: string, busySlots: Array<{ sta
     const busyEnd = new Date(slot.end);
     return slotStart < busyEnd && slotEnd > busyStart;
   });
+}
+
+function isTimeSlotInPast(dateStr: string, hourStr: string): boolean {
+  const slotStart = buildLocalSlotStart(dateStr, hourStr);
+  return slotStart <= new Date();
 }
 
 export default function FormularioMultiStep({ onSubmitComplete }: FormularioMultiStepProps) {
@@ -1235,7 +1248,8 @@ export default function FormularioMultiStep({ onSubmitComplete }: FormularioMult
                           ) : (
                             <div className="grid grid-cols-3 gap-2">
                               {AVAILABLE_HOURS.map((hour) => {
-                                const isBusy = isTimeSlotBusy(citaVirtualFecha, hour, busySlots);
+                                const isPast = isTimeSlotInPast(citaVirtualFecha, hour);
+                                const isBusy = isPast || isTimeSlotBusy(citaVirtualFecha, hour, busySlots);
                                 const isSelected = citaVirtualHora === hour;
 
                                 return (

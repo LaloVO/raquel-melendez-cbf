@@ -9,6 +9,8 @@ import MapPage from "./pages/MapPage";
 import PropertyDetail from "./pages/PropertyDetail";
 import SolicitaInmueble from "./pages/SolicitaInmueble";
 import MasarocaPage from "./pages/Masaroca";
+import Desarrollos from "./pages/Desarrollos";
+import VenderPropiedad from "./pages/VenderPropiedad";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +28,8 @@ const App = () => (
             <Route path="/properties/:id" element={<PropertyDetail />} />
             <Route path="/solicita-inmueble" element={<SolicitaInmueble />} />
             <Route path="/masaroca" element={<MasarocaPage />} />
+            <Route path="/desarrollos" element={<Desarrollos />} />
+            <Route path="/vender-propiedad" element={<VenderPropiedad />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

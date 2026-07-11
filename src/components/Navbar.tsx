@@ -21,12 +21,10 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { href: '/#mision', label: 'Misión' },
-    { href: '/#vision', label: 'Visión' },
+    { href: '/#mision', label: 'Misión y Visión' },
     { href: '/mapa', label: 'Inmuebles' },
+    { href: '/desarrollos', label: 'Desarrollos' },
     { href: '/masaroca', label: 'Masaroca' },
-    { href: '/#cursos', label: 'Cursos' },
-    { href: '/#contacto', label: 'Contacto' },
   ];
 
   const handleNavClick = (href: string) => {
@@ -90,18 +88,18 @@ const Navbar = () => {
           {/* CTAs */}
           <div className="flex items-center gap-3">
             <button
-              onClick={() => handleNavClick('/solicita-inmueble')}
+              onClick={() => handleNavClick('/vender-propiedad')}
               className={`px-5 py-2 bg-[#B76E4D] text-white font-sans uppercase text-[9px] tracking-[0.2em] font-semibold hover:bg-[#6E6259] transition-colors duration-300 shadow-sm ${
                 isScrolled ? 'rounded-full' : 'rounded-none'
               }`}
             >
-              Solicitar Inmueble
+              Vender mi Propiedad
             </button>
             <button
               onClick={() => handleNavClick('/#contacto')}
               className="font-sans uppercase text-[9px] tracking-[0.2em] font-semibold text-[#6E6259] hover:text-[#B76E4D] transition-colors duration-300"
             >
-              Agenda Cita
+              Solicitar Inmueble
             </button>
           </div>
         </div>
@@ -133,16 +131,16 @@ const Navbar = () => {
             </button>
           ))}
           <button
-            onClick={() => handleNavClick('/solicita-inmueble')}
+            onClick={() => handleNavClick('/vender-propiedad')}
             className="mt-4 px-8 py-3 bg-[#B76E4D] text-white font-sans uppercase text-xs tracking-[0.2em] rounded-full hover:bg-[#6E6259] transition-colors duration-300"
           >
-            Solicitar Inmueble
+            Vender mi Propiedad
           </button>
           <button
             onClick={() => handleNavClick('/#contacto')}
             className="px-8 py-3 border border-[#6E6259]/30 text-[#6E6259] font-sans uppercase text-xs tracking-[0.2em] rounded-full hover:border-[#B76E4D] hover:text-[#B76E4D] transition-colors duration-300"
           >
-            Agenda Cita
+            Solicitar Inmueble
           </button>
         </div>
       </div>

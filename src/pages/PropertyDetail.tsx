@@ -1,21 +1,42 @@
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
-import { ArrowLeft, Bed, Bath, Square, Car, MapPin, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Bed, Bath, Square, Car, MapPin, MessageCircle, CalendarCheck, Layers, Home as HomeIcon } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import PropertyCard from '@/components/PropertyCard';
 import { fetchProperty, formatPrice } from '@/lib/cbf';
 import { useSiteUser } from '@/hooks/useSiteUser';
+import { usePropertyCatalog } from '@/hooks/usePropertyCatalog';
+
+function formatFecha(iso: string | null | undefined): string | null {
+  if (!iso) return null;
+  return new Date(`${iso}T00:00:00`).toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+}
 
 const PropertyDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useSiteUser();
+  const { childUnitsByParent } = usePropertyCatalog();
 
   const { data: property, isLoading, error } = useQuery({
     queryKey: ['property', id],
     queryFn: () => fetchProperty(id!),
     enabled: !!id,
   });
+
+  const isDevelopment = property?.is_unit === false;
+  const childUnits = isDevelopment && id ? childUnitsByParent.get(Number(id)) ?? [] : [];
+  const verticals = property?.development_verticals ?? [];
+  const fechaInicio = formatFecha(property?.fecha_inicio);
+  const fechaEntrega = formatFecha(property?.fecha_entrega);
+  const fromPrice = isDevelopment
+    ? (() => {
+        const prices = childUnits.map((u) => u.precio).filter((p) => p > 0);
+        if (prices.length) return Math.min(...prices);
+        return property && property.precio > 0 ? property.precio : null;
+      })()
+    : null;
 
   const whatsappNumber = user?.telefono_usuario?.replace(/\D/g, '') ?? '';
   const whatsappMsg = property
@@ -57,7 +78,7 @@ const PropertyDetail = () => {
 
   const images = property.imagenes_propiedades ?? [];
   const mainImage = images[0]?.image_url ?? 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=1200&auto=format&fit=crop';
-  const badge = property.id_tipo_accion === 2 ? 'Renta' : 'Venta';
+  const badge = isDevelopment ? 'Desarrollo' : property.id_tipo_accion === 2 ? 'Renta' : 'Venta';
   const location = [property.colonia, property.direccion].filter(Boolean).join(', ');
 
   return (
@@ -132,6 +153,15 @@ const PropertyDetail = () => {
                     {property.tipo}
                   </span>
                 )}
+                {verticals.map((v) => (
+                  <span
+                    key={v}
+                    className="flex items-center gap-1 px-3 py-1 bg-[#B76E4D]/10 border border-[#B76E4D]/25 text-[#B76E4D] text-[9px] uppercase tracking-widest font-sans font-semibold"
+                  >
+                    <Layers className="w-2.5 h-2.5" />
+                    {v}
+                  </span>
+                ))}
               </div>
 
               {/* Title & Location */}
@@ -147,44 +177,118 @@ const PropertyDetail = () => {
               )}
 
               {/* Technical Specifications Grid with clean white boxes */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
-                {property.habitaciones != null && (
-                  <div className="bg-white border border-[#E9DDCF]/40 p-4 text-center shadow-sm">
-                    <Bed className="w-4 h-4 mx-auto mb-2 text-[#B76E4D]" />
-                    <p className="font-serif text-xl text-[#6E6259]">{property.habitaciones}</p>
-                    <p className="text-[9px] uppercase tracking-widest text-[#6E6259]/50 font-sans font-medium mt-1">Recámaras</p>
-                  </div>
-                )}
-                {property.banios != null && (
-                  <div className="bg-white border border-[#E9DDCF]/40 p-4 text-center shadow-sm">
-                    <Bath className="w-4 h-4 mx-auto mb-2 text-[#B76E4D]" />
-                    <p className="font-serif text-xl text-[#6E6259]">{property.banios}</p>
-                    <p className="text-[9px] uppercase tracking-widest text-[#6E6259]/50 font-sans font-medium mt-1">Baños</p>
-                  </div>
-                )}
-                {property.area != null && (
-                  <div className="bg-white border border-[#E9DDCF]/40 p-4 text-center shadow-sm">
-                    <Square className="w-4 h-4 mx-auto mb-2 text-[#B76E4D]" />
-                    <p className="font-serif text-xl text-[#6E6259]">{property.area}</p>
-                    <p className="text-[9px] uppercase tracking-widest text-[#6E6259]/50 font-sans font-medium mt-1">Metros²</p>
-                  </div>
-                )}
-                {property.estacionamientos != null && (
-                  <div className="bg-white border border-[#E9DDCF]/40 p-4 text-center shadow-sm">
-                    <Car className="w-4 h-4 mx-auto mb-2 text-[#B76E4D]" />
-                    <p className="font-serif text-xl text-[#6E6259]">{property.estacionamientos}</p>
-                    <p className="text-[9px] uppercase tracking-widest text-[#6E6259]/50 font-sans font-medium mt-1">Estac.</p>
-                  </div>
-                )}
-              </div>
+              {isDevelopment ? (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+                  {childUnits.length > 0 && (
+                    <div className="bg-white border border-[#E9DDCF]/40 p-4 text-center shadow-sm">
+                      <HomeIcon className="w-4 h-4 mx-auto mb-2 text-[#B76E4D]" />
+                      <p className="font-serif text-xl text-[#6E6259]">{childUnits.length}</p>
+                      <p className="text-[9px] uppercase tracking-widest text-[#6E6259]/50 font-sans font-medium mt-1">
+                        {childUnits.length === 1 ? 'Unidad' : 'Unidades'}
+                      </p>
+                    </div>
+                  )}
+                  {fechaInicio && (
+                    <div className="bg-white border border-[#E9DDCF]/40 p-4 text-center shadow-sm">
+                      <CalendarCheck className="w-4 h-4 mx-auto mb-2 text-[#B76E4D]" />
+                      <p className="font-serif text-sm text-[#6E6259]">{fechaInicio}</p>
+                      <p className="text-[9px] uppercase tracking-widest text-[#6E6259]/50 font-sans font-medium mt-1">Inicio de obra</p>
+                    </div>
+                  )}
+                  {fechaEntrega && (
+                    <div className="bg-white border border-[#E9DDCF]/40 p-4 text-center shadow-sm">
+                      <CalendarCheck className="w-4 h-4 mx-auto mb-2 text-[#B76E4D]" />
+                      <p className="font-serif text-sm text-[#6E6259]">{fechaEntrega}</p>
+                      <p className="text-[9px] uppercase tracking-widest text-[#6E6259]/50 font-sans font-medium mt-1">Entrega estimada</p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+                  {property.habitaciones != null && (
+                    <div className="bg-white border border-[#E9DDCF]/40 p-4 text-center shadow-sm">
+                      <Bed className="w-4 h-4 mx-auto mb-2 text-[#B76E4D]" />
+                      <p className="font-serif text-xl text-[#6E6259]">{property.habitaciones}</p>
+                      <p className="text-[9px] uppercase tracking-widest text-[#6E6259]/50 font-sans font-medium mt-1">Recámaras</p>
+                    </div>
+                  )}
+                  {property.banios != null && (
+                    <div className="bg-white border border-[#E9DDCF]/40 p-4 text-center shadow-sm">
+                      <Bath className="w-4 h-4 mx-auto mb-2 text-[#B76E4D]" />
+                      <p className="font-serif text-xl text-[#6E6259]">{property.banios}</p>
+                      <p className="text-[9px] uppercase tracking-widest text-[#6E6259]/50 font-sans font-medium mt-1">Baños</p>
+                    </div>
+                  )}
+                  {property.area != null && (
+                    <div className="bg-white border border-[#E9DDCF]/40 p-4 text-center shadow-sm">
+                      <Square className="w-4 h-4 mx-auto mb-2 text-[#B76E4D]" />
+                      <p className="font-serif text-xl text-[#6E6259]">{property.area}</p>
+                      <p className="text-[9px] uppercase tracking-widest text-[#6E6259]/50 font-sans font-medium mt-1">Metros²</p>
+                    </div>
+                  )}
+                  {property.estacionamientos != null && (
+                    <div className="bg-white border border-[#E9DDCF]/40 p-4 text-center shadow-sm">
+                      <Car className="w-4 h-4 mx-auto mb-2 text-[#B76E4D]" />
+                      <p className="font-serif text-xl text-[#6E6259]">{property.estacionamientos}</p>
+                      <p className="text-[9px] uppercase tracking-widest text-[#6E6259]/50 font-sans font-medium mt-1">Estac.</p>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Description section */}
-              {property.descripcion && (
-                <div className="border-t border-[#E9DDCF]/35 pt-8">
-                  <h2 className="font-serif text-xl text-[#6E6259] mb-4 font-normal">Descripción de la Residencia</h2>
-                  <p className="font-sans text-sm sm:text-base text-[#6E6259]/85 leading-relaxed font-light whitespace-pre-line">
-                    {property.descripcion}
-                  </p>
+              {(property.descripcion || property.descripcion_estado || property.descripcion_inversion) && (
+                <div className="border-t border-[#E9DDCF]/35 pt-8 space-y-8">
+                  {property.descripcion && (
+                    <div>
+                      <h2 className="font-serif text-xl text-[#6E6259] mb-4 font-normal">Descripción de la Residencia</h2>
+                      <p className="font-sans text-sm sm:text-base text-[#6E6259]/85 leading-relaxed font-light whitespace-pre-line">
+                        {property.descripcion}
+                      </p>
+                    </div>
+                  )}
+
+                  {property.descripcion_estado && (
+                    <div>
+                      <h3 className="text-[9px] uppercase tracking-widest text-[#B76E4D] font-sans font-bold mb-3">
+                        Estado / Condición del Inmueble
+                      </h3>
+                      <p className="font-sans text-sm sm:text-base text-[#6E6259]/85 leading-relaxed font-light whitespace-pre-line">
+                        {property.descripcion_estado}
+                      </p>
+                    </div>
+                  )}
+
+                  {property.descripcion_inversion && (
+                    <div>
+                      <h3 className="text-[9px] uppercase tracking-widest text-[#B76E4D] font-sans font-bold mb-3">
+                        Potencial de Inversión
+                      </h3>
+                      <p className="font-sans text-sm sm:text-base text-[#6E6259]/85 leading-relaxed font-light whitespace-pre-line">
+                        {property.descripcion_inversion}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Unidades disponibles del desarrollo */}
+              {isDevelopment && (
+                <div className="border-t border-[#E9DDCF]/35 pt-8 mt-8">
+                  <h2 className="font-serif text-xl text-[#6E6259] mb-5 font-normal">
+                    Unidades disponibles{childUnits.length > 0 ? ` (${childUnits.length})` : ''}
+                  </h2>
+                  {childUnits.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      {childUnits.map((unit) => (
+                        <PropertyCard key={unit.id} property={unit} />
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="font-sans text-sm text-[#6E6259]/70">
+                      Aún no hay unidades específicas publicadas para este desarrollo.
+                    </p>
+                  )}
                 </div>
               )}
             </div>
@@ -193,13 +297,21 @@ const PropertyDetail = () => {
             <div className="lg:col-span-4 sticky top-28">
               <div className="bg-white border border-[#E9DDCF]/55 p-6 md:p-8 shadow-elegant text-[#6E6259]">
                 <span className="block text-[9px] uppercase tracking-widest text-[#6E6259]/45 mb-1 font-sans">
-                  Precio de la propiedad
+                  {isDevelopment ? 'Precio de las unidades' : 'Precio de la propiedad'}
                 </span>
                 <p className="font-sans font-bold text-3xl md:text-4xl text-[#B76E4D] mb-1">
-                  {formatPrice(property.precio)}
+                  {isDevelopment
+                    ? fromPrice != null
+                      ? `Desde ${formatPrice(fromPrice)}`
+                      : 'Precio a consultar'
+                    : formatPrice(property.precio)}
                 </p>
                 <p className="text-[10px] uppercase tracking-widest text-[#6E6259]/60 font-sans mb-8">
-                  {badge === 'Renta' ? 'por mes' : 'precio total de adquisición'}
+                  {isDevelopment
+                    ? 'desde la unidad más económica'
+                    : badge === 'Renta'
+                    ? 'por mes'
+                    : 'precio total de adquisición'}
                 </p>
 
                 {/* Profile card of advisor */}
