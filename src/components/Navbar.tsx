@@ -65,7 +65,7 @@ const Navbar = () => {
         {/* Brand Logo */}
         <Link
           to="/"
-          className="font-serif text-base md:text-lg tracking-[0.25em] uppercase text-[#6E6259] hover:text-[#B76E4D] transition-colors duration-300 font-semibold flex items-center gap-1"
+          className="font-serif text-[20px] md:text-[22.5px] tracking-[0.25em] uppercase text-black hover:text-[#B76E4D] transition-colors duration-300 font-semibold flex items-center gap-1"
         >
           {site?.site_name ? site.site_name : 'Raquel Meléndrez'}
           <span className="text-[#B76E4D]">.</span>
@@ -73,7 +73,7 @@ const Navbar = () => {
 
         {/* Desktop Navigation Links */}
         <div className="hidden md:flex items-center gap-8">
-          <div className="flex gap-6 text-[10px] uppercase tracking-[0.25em] font-sans font-medium text-[#6E6259]">
+          <div className="flex gap-6 text-[12.5px] uppercase tracking-[0.25em] font-sans font-medium text-black">
             {navLinks.map((link) => (
               <button
                 key={link.label}
@@ -89,17 +89,11 @@ const Navbar = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => handleNavClick('/vender-propiedad')}
-              className={`px-5 py-2 bg-[#B76E4D] text-white font-sans uppercase text-[9px] tracking-[0.2em] font-semibold hover:bg-[#6E6259] transition-colors duration-300 shadow-sm ${
+              className={`px-5 py-2 bg-[#B76E4D] text-white font-sans uppercase text-[11.25px] tracking-[0.2em] font-semibold hover:bg-black transition-colors duration-300 shadow-sm ${
                 isScrolled ? 'rounded-full' : 'rounded-none'
               }`}
             >
               Vender mi Propiedad
-            </button>
-            <button
-              onClick={() => handleNavClick('/#contacto')}
-              className="font-sans uppercase text-[9px] tracking-[0.2em] font-semibold text-[#6E6259] hover:text-[#B76E4D] transition-colors duration-300"
-            >
-              Solicitar Inmueble
             </button>
           </div>
         </div>
@@ -107,10 +101,10 @@ const Navbar = () => {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden text-[#6E6259] hover:text-[#B76E4D] transition-colors focus:outline-none"
+          className="md:hidden text-black hover:text-[#B76E4D] transition-colors focus:outline-none"
           aria-label="Toggle menu"
         >
-          {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {isMobileMenuOpen ? <X className="w-[25px] h-[25px]" /> : <Menu className="w-[25px] h-[25px]" />}
         </button>
       </div>
 
@@ -125,22 +119,16 @@ const Navbar = () => {
             <button
               key={link.label}
               onClick={() => handleNavClick(link.href)}
-              className="font-serif text-2xl text-[#6E6259] hover:text-[#B76E4D] transition-colors duration-300 tracking-wider"
+              className="font-serif text-[30px] text-black hover:text-[#B76E4D] transition-colors duration-300 tracking-wider"
             >
               {link.label}
             </button>
           ))}
           <button
             onClick={() => handleNavClick('/vender-propiedad')}
-            className="mt-4 px-8 py-3 bg-[#B76E4D] text-white font-sans uppercase text-xs tracking-[0.2em] rounded-full hover:bg-[#6E6259] transition-colors duration-300"
+            className="mt-4 px-8 py-3 bg-[#B76E4D] text-white font-sans uppercase text-[15px] tracking-[0.2em] rounded-full hover:bg-black transition-colors duration-300"
           >
             Vender mi Propiedad
-          </button>
-          <button
-            onClick={() => handleNavClick('/#contacto')}
-            className="px-8 py-3 border border-[#6E6259]/30 text-[#6E6259] font-sans uppercase text-xs tracking-[0.2em] rounded-full hover:border-[#B76E4D] hover:text-[#B76E4D] transition-colors duration-300"
-          >
-            Solicitar Inmueble
           </button>
         </div>
       </div>

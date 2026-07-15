@@ -30,10 +30,7 @@ const VenderPropiedad = () => {
               <br />
               <span className="italic text-[#B76E4D]">con estrategia</span>
             </h1>
-            <p className="font-sans text-sm text-[#6E6259]/70 font-light mt-6 leading-relaxed">
-              Comparte los datos de tu inmueble. Raquel Meléndrez evaluará tu expediente y te
-              presentará una estrategia de venta personalizada en menos de 24 horas.
-            </p>
+
           </div>
 
           <FormularioVenderPropiedad />

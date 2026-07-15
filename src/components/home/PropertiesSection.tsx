@@ -4,8 +4,8 @@ import { useProperties } from '@/hooks/useProperties';
 import { useEffect, useRef, useState } from 'react';
 
 const SkeletonCard = () => (
-  <div className="min-w-[85vw] md:min-w-[32vw] animate-pulse snap-center bg-white p-4 border border-border">
-    <div className="aspect-[4/3] mb-6 bg-[#E9DDCF]/40" />
+  <div className="w-[380px] shrink-0 animate-pulse snap-center bg-white/40 backdrop-blur-md border border-white/30 p-4 rounded-3xl">
+    <div className="aspect-[4/3] mb-6 bg-[#E9DDCF]/40 rounded-2xl" />
     <div className="h-6 bg-[#E9DDCF]/40 rounded w-3/4 mb-2" />
     <div className="h-4 bg-[#E9DDCF]/40 rounded w-1/2" />
   </div>

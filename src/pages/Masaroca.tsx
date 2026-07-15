@@ -19,7 +19,7 @@ const colorOptions: ColorOption[] = [
     id: 'blanco',
     name: 'Blanco',
     hex: '#F4F1EA',
-    description: 'Tono marfil orgánico que refleja la luz natural aportando calidez y amplitud.',
+    description: 'Tono que refleja la luz natural aportando calidez y amplitud.',
     image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=600&auto=format&fit=crop'
   },
   {
@@ -189,7 +189,7 @@ const faqItems: FaqItem[] = [
 
 const MasarocaPage = () => {
   const { user } = useSiteUser();
-  const whatsappNumber = user?.telefono_usuario?.replace(/\D/g, '') || '525512345678';
+  const whatsappNumber = '525582016475';
 
   // Form State
   const [projectDescription, setProjectDescription] = useState<string>('');
@@ -282,12 +282,12 @@ const MasarocaPage = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <div className="w-3.5 h-3.5 rounded-full border border-black/10 shrink-0" style={{ backgroundColor: option.hex }} />
-                        <span className="font-sans font-bold text-xs uppercase tracking-wider truncate">
+                        <span className="font-sans font-bold text-[13px] uppercase tracking-wider truncate">
                           {option.name}
                         </span>
                         {selectedColor.id === option.id && <Check className="w-3.5 h-3.5 text-[#B76E4D] ml-auto shrink-0" />}
                       </div>
-                      <p className="font-sans text-[11px] text-[#6E6259]/70 font-light mt-1.5 leading-snug line-clamp-2 text-justify">
+                      <p className="font-sans text-[13px] text-[#6E6259]/70 font-light mt-1.5 leading-snug line-clamp-2 text-justify">
                         {option.description}
                       </p>
                     </div>
@@ -303,14 +303,14 @@ const MasarocaPage = () => {
                 Atributos de Desempeño
               </h2>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 font-sans text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 font-sans">
                 <div className="flex gap-4">
                   <div className="w-10 h-10 bg-white border border-[#E9DDCF]/45 rounded-xl flex items-center justify-center shrink-0 text-[#B76E4D]">
                     <Shield className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-bold uppercase tracking-wider text-[#6E6259]">Resistencia Mecánica</h4>
-                    <p className="text-[#6E6259]/70 font-light mt-1 leading-relaxed text-justify">
+                    <h4 className="font-bold uppercase tracking-wider text-[#6E6259] text-[13.5px]">Resistencia Mecánica</h4>
+                    <p className="text-[#6E6259]/70 font-light mt-1 leading-relaxed text-justify text-[14px]">
                       Microconcreto de alta resistencia mecánica diseñado para aplicaciones estructurales, industriales y arquitectónicas.
                     </p>
                   </div>
@@ -321,8 +321,8 @@ const MasarocaPage = () => {
                     <Droplet className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-bold uppercase tracking-wider text-[#6E6259]">Impermeabilidad</h4>
-                    <p className="text-[#6E6259]/70 font-light mt-1 leading-relaxed text-justify">
+                    <h4 className="font-bold uppercase tracking-wider text-[#6E6259] text-[13.5px]">Impermeabilidad</h4>
+                    <p className="text-[#6E6259]/70 font-light mt-1 leading-relaxed text-justify text-[14px]">
                       Barrera selladora absoluta que impide el paso de la humedad y salitre hacia las estructuras.
                     </p>
                   </div>
@@ -333,8 +333,8 @@ const MasarocaPage = () => {
                     <Sparkles className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-bold uppercase tracking-wider text-[#6E6259]">Estabilidad Dimensional</h4>
-                    <p className="text-[#6E6259]/70 font-light mt-1 leading-relaxed text-justify">
+                    <h4 className="font-bold uppercase tracking-wider text-[#6E6259] text-[13.5px]">Estabilidad Dimensional</h4>
+                    <p className="text-[#6E6259]/70 font-light mt-1 leading-relaxed text-justify text-[14px]">
                       Fórmula avanzada que no presenta contracción, reduciendo o eliminando agrietamientos en la superficie.
                     </p>
                   </div>
@@ -345,8 +345,8 @@ const MasarocaPage = () => {
                     <Award className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-bold uppercase tracking-wider text-[#6E6259]">Gran Versatilidad</h4>
-                    <p className="text-[#6E6259]/70 font-light mt-1 leading-relaxed text-justify">
+                    <h4 className="font-bold uppercase tracking-wider text-[#6E6259] text-[13.5px]">Gran Versatilidad</h4>
+                    <p className="text-[#6E6259]/70 font-light mt-1 leading-relaxed text-justify text-[14px]">
                       Sustituye múltiples materiales en una sola aplicación y permite el modelado libre de superficies.
                     </p>
                   </div>
@@ -416,7 +416,7 @@ const MasarocaPage = () => {
               Enviar Solicitud
             </a>
 
-            <p className="text-center font-sans text-[8px] uppercase tracking-widest text-[#6E6259]/50 mt-4 leading-relaxed font-light">
+            <p className="text-center font-sans text-[10px] uppercase tracking-widest text-[#B76E4D] mt-4 leading-relaxed font-semibold">
               Envío directo de fábrica a toda la República Mexicana. Soporte técnico incluido.
             </p>
           </div>

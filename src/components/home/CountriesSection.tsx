@@ -19,7 +19,7 @@ const countries: CountryConfig[] = [
     subtitle: 'Un mercado lleno de oportunidades para construir patrimonio con visión a largo plazo.',
     description: 'Desde desarrollos con alta plusvalía hasta propiedades con valor arquitectónico y potencial de inversión, acompaño a cada cliente a identificar oportunidades alineadas con sus objetivos, estilo de vida y estrategia patrimonial.',
     image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200&auto=format&fit=crop',
-    cities: ['Ciudad de México', 'Monterrey', 'Riviera Maya'],
+    cities: ['Ciudad de México', 'Estado de México', 'Riviera Maya'],
     searchQuery: 'colonia=lomas&colonia=polanco'
   },
   {
@@ -114,7 +114,7 @@ const CountriesSection = () => {
             </h2>
           </div>
           <p className="font-sans text-base sm:text-lg md:text-xl text-[#6E6259]/70 max-w-xl font-light leading-relaxed text-justify">
-            Acompañando inversiones y decisiones patrimoniales en México y el extranjero, con una visión estratégica, cercana y enfocada en oportunidades de valor a largo plazo.
+            Acompañando la toma de decisiones patrimoniales y de inversiones en México y el extranjero, con una visión estratégica, cercana y enfocada en oportunidades de valor a largo plazo.
           </p>
         </div>
 

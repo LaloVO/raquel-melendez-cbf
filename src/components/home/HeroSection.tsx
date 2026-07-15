@@ -245,7 +245,7 @@ const HeroSection = () => {
                 e.stopPropagation();
                 setShowSuggestions(true);
               }}
-              className="bg-transparent w-full outline-none text-[#FAF7F2] placeholder-white/45 font-sans text-xs md:text-sm"
+              className="bg-transparent w-full outline-none text-white placeholder-white font-sans text-xs md:text-sm"
             />
 
             {/* Suggestions Dropdown */}
@@ -277,7 +277,7 @@ const HeroSection = () => {
             <select
               value={propertyType}
               onChange={(e) => setPropertyType(e.target.value)}
-              className="bg-transparent w-full outline-none text-[#FAF7F2] placeholder-white/45 font-sans text-xs md:text-sm appearance-none cursor-pointer"
+              className="bg-transparent w-full outline-none text-white placeholder-white/45 font-sans text-xs md:text-sm appearance-none cursor-pointer"
             >
               <option value="" className="bg-[#2E251E] text-white">Cualquier tipo</option>
               <option value="casa" className="bg-[#2E251E] text-white">Residencias</option>

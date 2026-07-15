@@ -72,7 +72,7 @@ const TestimonialsSection = () => {
             >
               <div className="flex flex-col gap-6">
                 <Quote className="w-6 h-6 text-[#B76E4D]/35 shrink-0" />
-                <p className="font-serif text-sm sm:text-base text-[#6E6259] font-light leading-relaxed italic">
+                <p className="font-serif text-[15.5px] sm:text-[17.5px] text-[#6E6259] font-light leading-relaxed italic">
                   "{item.quote}"
                 </p>
               </div>

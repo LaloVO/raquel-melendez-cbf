@@ -49,7 +49,7 @@ const ProductSection = () => {
             }`}
           >
             <Link to="/masaroca">
-              MasaRoca: Redefine la
+              Masaroca: Redefine la
               <br />
               <span className="italic font-semibold text-[#B76E4D]">forma de construir</span>
               <br />
@@ -63,7 +63,7 @@ const ProductSection = () => {
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
-              <strong>MasaRoca</strong> es Tecnología Mexicana de Alto Desempeño que combina resistencia estructural, impermeabilidad y libertad de modelado para aplicaciones arquitectónicas, constructivas y artísticas.
+              <strong>Masaroca</strong> es Tecnología Mexicana de Alto Desempeño que combina resistencia estructural, impermeabilidad y libertad de modelado para aplicaciones arquitectónicas, constructivas y artísticas.
             </p>
             <p
               className={`transition-all duration-1000 delay-400 ${
@@ -77,7 +77,7 @@ const ProductSection = () => {
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
             >
-              Desde restauración arquitectónica y construcción estructural, hasta diseño, texturas y escultura, MasaRoca combina innovación, funcionalidad y libertad creativa en un solo material.
+              Desde restauración arquitectónica y construcción estructural, hasta diseño, texturas y escultura, Masaroca combina innovación, funcionalidad y libertad creativa en un solo material.
             </p>
           </div>
 

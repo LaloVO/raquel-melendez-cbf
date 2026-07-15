@@ -95,15 +95,15 @@ const CoursesSection = () => {
                   <div className="w-10 h-10 bg-[#FAF7F2] border border-[#E9DDCF]/40 flex items-center justify-center mb-6 rounded-xl">
                     <Icon className="w-5 h-5 text-[#B76E4D]" />
                   </div>
-                  <h3 className="font-serif text-xl text-[#6E6259] font-normal mb-4 leading-snug">
+                  <h3 className="font-serif text-[21px] text-[#6E6259] font-normal mb-4 leading-snug">
                     {course.title}
                   </h3>
-                  <p className="font-sans text-xs sm:text-sm text-[#6E6259]/75 font-light leading-relaxed text-justify mb-6">
+                  <p className="font-sans text-[13px] sm:text-[15px] text-[#6E6259]/75 font-light leading-relaxed text-justify mb-6">
                     {course.description}
                   </p>
                 </div>
 
-                <div className="flex justify-between items-center border-t border-[#E9DDCF]/30 pt-4 mt-6 text-[10px] uppercase tracking-wider font-sans font-semibold text-[#6E6259]/65">
+                <div className="flex justify-between items-center border-t border-[#E9DDCF]/30 pt-4 mt-6 text-[11px] uppercase tracking-wider font-sans font-semibold text-[#6E6259]/65">
                   <span className="flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5 text-[#B76E4D]" />
                     {course.duration}

@@ -77,7 +77,7 @@ const Footer = () => {
           <div className="flex flex-col gap-4 font-sans text-xs text-[#FAF7F2]/70 leading-relaxed font-light">
             <div>
               <span className="block font-medium uppercase tracking-wider text-[#FAF7F2]">México</span>
-              <span className="block text-[#FAF7F2]/50 text-[11px]">Ciudad de México, Monterrey, Riviera Maya</span>
+              <span className="block text-[#FAF7F2]/50 text-[11px]">Ciudad de México, Estado de México, Riviera Maya</span>
             </div>
             <div>
               <span className="block font-medium uppercase tracking-wider text-[#FAF7F2]">EE.UU.</span>

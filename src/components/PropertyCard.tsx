@@ -70,7 +70,7 @@ const PropertyCard = ({ property, variant = 'default' }: PropertyCardProps) => {
   return (
     <Link
       to={`/properties/${property.id}`}
-      className="min-w-[85vw] sm:min-w-[45vw] md:min-w-[32vw] group cursor-pointer block bg-white/40 backdrop-blur-md border border-white/30 p-4 rounded-3xl shadow-card hover:shadow-elegant hover:bg-white/80 transition-all duration-500"
+      className="w-[380px] shrink-0 group cursor-pointer block bg-white/40 backdrop-blur-md border border-white/30 p-4 rounded-3xl shadow-card hover:shadow-elegant hover:bg-white/80 transition-all duration-500"
     >
       <div className="relative aspect-[4/3] mb-5 overflow-hidden bg-[#E9DDCF]/10 rounded-2xl">
         <img
