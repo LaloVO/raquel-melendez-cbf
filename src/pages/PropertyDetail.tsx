@@ -5,7 +5,7 @@ import { ArrowLeft, Bed, Bath, Square, Car, MapPin, MessageCircle, CalendarCheck
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import PropertyCard from '@/components/PropertyCard';
-import { fetchProperty, formatPrice } from '@/lib/cbf';
+import { fetchProperty, formatPrice, actionLabel } from '@/lib/cbf';
 import { useSiteUser } from '@/hooks/useSiteUser';
 import { usePropertyCatalog } from '@/hooks/usePropertyCatalog';
 
@@ -78,7 +78,7 @@ const PropertyDetail = () => {
 
   const images = property.imagenes_propiedades ?? [];
   const mainImage = images[0]?.image_url ?? 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=1200&auto=format&fit=crop';
-  const badge = isDevelopment ? 'Desarrollo' : property.id_tipo_accion === 2 ? 'Renta' : 'Venta';
+  const badge = isDevelopment ? 'Desarrollo' : actionLabel(property.id_tipo_accion);
   const location = [property.colonia, property.direccion].filter(Boolean).join(', ');
 
   return (

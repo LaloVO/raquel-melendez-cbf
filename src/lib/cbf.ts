@@ -159,3 +159,15 @@ export async function fetchBusySlots(): Promise<Array<{ start: string; end: stri
   const json = await res.json();
   return json.busySlots || [];
 }
+
+export function actionLabel(id?: number): string {
+  const map: Record<number, string> = {
+    1: "Venta",
+    2: "Renta",
+    3: "Traspaso",
+    4: "Pre-Venta",
+    5: "Aportación",
+    6: "Remate"
+  };
+  return id ? (map[id] ?? "Venta") : "Venta";
+}

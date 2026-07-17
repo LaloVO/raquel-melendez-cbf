@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Bed, Bath, Square } from 'lucide-react';
-import { CBFProperty, formatPrice } from '@/lib/cbf';
+import { CBFProperty, formatPrice, actionLabel } from '@/lib/cbf';
 
 interface PropertyCardProps {
   property: CBFProperty;
@@ -9,7 +9,7 @@ interface PropertyCardProps {
 
 const PropertyCard = ({ property, variant = 'default' }: PropertyCardProps) => {
   const image = property.imagenes_propiedades?.[0]?.image_url ?? 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=800&auto=format&fit=crop';
-  const badge = property.id_tipo_accion === 2 ? 'Renta' : 'Venta';
+  const badge = actionLabel(property.id_tipo_accion);
   const location = [property.colonia, property.direccion].filter(Boolean).join(' • ') || '';
 
   if (variant === 'compact') {
