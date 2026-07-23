@@ -258,7 +258,7 @@ const MapPage = () => {
             mobileView === 'map' ? 'flex' : 'hidden lg:flex'
           )}
         >
-          <div className="absolute top-4 left-4 z-10 max-w-[92vw]">
+          <div className="absolute top-16 md:top-4 left-3 md:left-4 z-10 max-w-[92vw]">
             <PropertyFilters
               filters={filters}
               onFiltersChange={(f) => setFilters({ ...filters, ...f })}
