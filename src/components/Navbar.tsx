@@ -55,20 +55,20 @@ const Navbar = () => {
     <nav
       className={`fixed z-50 transition-all duration-500 ease-in-out ${
         isScrolled
-          ? 'top-4 left-1/2 -translate-x-1/2 w-[92%] max-w-[85rem] bg-white/30 backdrop-blur-xl border border-white/30 shadow-elegant rounded-full px-8 py-2.5'
+          ? 'top-3 md:top-4 left-1/2 -translate-x-1/2 w-[94%] max-w-[85rem] bg-white/30 backdrop-blur-xl border border-white/30 shadow-elegant rounded-full px-4 py-2.5 md:px-8'
           : isMapPage
-          ? 'top-0 left-0 w-full bg-[#FAF7F2]/80 backdrop-blur-md border-b border-[#E9DDCF]/40 px-6 py-4 md:px-12'
-          : 'top-0 left-0 w-full bg-transparent px-6 py-5 md:px-12'
+          ? 'top-0 left-0 w-full bg-[#FAF7F2]/80 backdrop-blur-md border-b border-[#E9DDCF]/40 px-4 py-4 md:px-12'
+          : 'top-0 left-0 w-full bg-transparent px-4 py-5 md:px-12'
       }`}
     >
-      <div className="w-full flex justify-between items-center">
+      <div className="w-full flex justify-between items-center gap-2">
         {/* Brand Logo */}
         <Link
           to="/"
-          className="font-serif text-[20px] md:text-[22.5px] tracking-[0.25em] uppercase text-black hover:text-[#B76E4D] transition-colors duration-300 font-semibold flex items-center gap-1"
+          className="font-serif text-[16px] sm:text-[18px] md:text-[22.5px] tracking-[0.15em] sm:tracking-[0.2em] md:tracking-[0.25em] uppercase text-black hover:text-[#B76E4D] transition-colors duration-300 font-semibold flex items-center gap-0.5 truncate min-w-0"
         >
-          {site?.site_name ? site.site_name : 'Raquel Meléndrez'}
-          <span className="text-[#B76E4D]">.</span>
+          <span className="truncate">{site?.site_name ? site.site_name : 'Raquel Meléndrez'}</span>
+          <span className="text-[#B76E4D] shrink-0">.</span>
         </Link>
 
         {/* Desktop Navigation Links */}
@@ -101,10 +101,10 @@ const Navbar = () => {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden text-black hover:text-[#B76E4D] transition-colors focus:outline-none"
+          className="md:hidden text-black hover:text-[#B76E4D] transition-colors focus:outline-none shrink-0 z-50 p-1"
           aria-label="Toggle menu"
         >
-          {isMobileMenuOpen ? <X className="w-[25px] h-[25px]" /> : <Menu className="w-[25px] h-[25px]" />}
+          {isMobileMenuOpen ? <X className="w-[24px] h-[24px]" /> : <Menu className="w-[24px] h-[24px]" />}
         </button>
       </div>
 
