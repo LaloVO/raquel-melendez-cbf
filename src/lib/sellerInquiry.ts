@@ -18,6 +18,7 @@ export interface SellerInquiryPayload {
   nombre_completo: string;
   email: string;
   telefono: string;
+  id_tipo_accion?: number;
   titulo_propiedad?: string;
   id_tipo_propiedad?: number;
   precio_propiedad?: number;

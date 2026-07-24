@@ -67,6 +67,16 @@ const TIPOS_PROPIEDAD = [
   { id: 9, label: "Nave Industrial" },
 ];
 
+const TIPOS_ACCION = [
+  { id: 1, label: "Venta" },
+  { id: 2, label: "Renta" },
+  { id: 3, label: "Traspaso" },
+  { id: 4, label: "Pre-Venta" },
+  { id: 5, label: "Aportación" },
+  { id: 6, label: "Remate" },
+  { id: 7, label: "Permuta" },
+];
+
 const TIPOS_RESIDENCIALES = new Set([1, 2, 7]); // Casa, Departamento, Loft
 const TIPOS_COMERCIALES = new Set([4, 5]); // Oficina, Local Comercial
 const TIPOS_INDUSTRIALES = new Set([6, 9]); // Bodega, Nave Industrial
@@ -119,8 +129,9 @@ const fullSchema = z.object({
   nombre_completo: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
   email: z.string().email("Ingresa un email válido"),
   telefono: z.string().min(10, "El teléfono debe tener al menos 10 dígitos"),
+  id_tipo_accion: z.number({ required_error: "Selecciona el tipo de operación" }).min(1, "Selecciona el tipo de operación"),
   id_tipo_propiedad: z.number({ required_error: "Selecciona el tipo de propiedad" }).min(1),
-  precio_propiedad: z.number({ required_error: "Ingresa el precio de venta" }).positive(),
+  precio_propiedad: z.number({ required_error: "Ingresa el precio" }).positive(),
   id_estado: z.number({ required_error: "Selecciona el estado" }).min(1),
   id_ciudad: z.number({ required_error: "Selecciona la ciudad" }).min(1),
   direccion: z.string().min(5, "Ingresa la dirección completa"),
@@ -243,6 +254,8 @@ export default function FormularioVenderPropiedad() {
   const validateCurrentStep = async (): Promise<boolean> => {
     if (currentStep === 1) return trigger(["nombre_completo", "email", "telefono"]);
     if (currentStep === 2) {
+      const validOperacion = await trigger(["id_tipo_accion"]);
+      if (!validOperacion) return false;
       if (images.length === 0) {
         toast.error("Agrega al menos una foto de la propiedad");
         return false;
@@ -364,6 +377,7 @@ export default function FormularioVenderPropiedad() {
         nombre_completo: data.nombre_completo,
         email: data.email,
         telefono: data.telefono,
+        id_tipo_accion: data.id_tipo_accion,
         titulo_propiedad: data.titulo_propiedad || undefined,
         id_tipo_propiedad: data.id_tipo_propiedad,
         precio_propiedad: data.precio_propiedad,
@@ -538,17 +552,38 @@ export default function FormularioVenderPropiedad() {
             </div>
           )}
 
-          {/* PASO 2: Imágenes */}
+          {/* PASO 2: Operación y Fotos */}
           {currentStep === 2 && (
             <div className="space-y-6 animate-fadeIn">
               <div className="text-center mb-8">
-                <h2 className="font-serif text-3xl text-[#2E251E] font-medium">Fotos de la Propiedad</h2>
+                <h2 className="font-serif text-3xl text-[#2E251E] font-medium">Operación y Fotos</h2>
                 <p className="font-sans text-sm text-[#6E6259] mt-2">
-                  Agrega imágenes que muestren bien tu inmueble. La primera será la foto principal.
+                  Selecciona la modalidad de tu propiedad y agrega imágenes que la muestren bien.
                 </p>
               </div>
 
-              <div className="max-w-2xl mx-auto space-y-4">
+              <div className="max-w-2xl mx-auto space-y-6">
+                <div className="space-y-2">
+                  <Label className="font-sans text-sm font-medium text-[#2E251E]">Tipo de operación *</Label>
+                  <Select
+                    onValueChange={(val) => setValue("id_tipo_accion", Number(val), { shouldValidate: true })}
+                    value={watch("id_tipo_accion") ? String(watch("id_tipo_accion")) : ""}
+                  >
+                    <SelectTrigger className="rounded-full bg-white/50 border-[#6E6259]/20 focus:bg-white/95 focus:border-[#B76E4D]">
+                      <SelectValue placeholder="Selecciona el tipo de operación" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {TIPOS_ACCION.map((a) => (
+                        <SelectItem key={a.id} value={String(a.id)}>
+                          {a.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.id_tipo_accion && (
+                    <p className="text-xs text-red-500 font-sans">{errors.id_tipo_accion.message}</p>
+                  )}
+                </div>
                 <input
                   ref={imageInputRef}
                   type="file"
@@ -642,7 +677,7 @@ export default function FormularioVenderPropiedad() {
                   <div className="space-y-2">
                     <Label className="font-sans text-sm font-medium text-[#2E251E] flex items-center gap-2">
                       <DollarSign className="w-4 h-4 text-[#B76E4D]" />
-                      Precio de venta (MXN) *
+                      Precio (MXN) *
                     </Label>
                     <Input
                       type="number"
