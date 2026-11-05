@@ -1,310 +1,220 @@
-import { Search, MapPin, Home, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Map as MapIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSiteUser } from '@/hooks/useSiteUser';
+import { Link, useSearchParams } from 'react-router-dom';
+import HeroPropertySearch from './HeroPropertySearch';
+import { PATRIMONIO_PRODUCTS } from '@/features/patrimonio/products';
+
+type Servicio = 'bienes-raices' | 'patrimonio';
+
+const REAL_ESTATE_BG =
+  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2574&auto=format&fit=crop';
+const PATRIMONIO_BG =
+  'https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?q=80&w=2574&auto=format&fit=crop';
+
+// Palabra del titular que se enciende según el servicio elegido.
+const ACCENT: Record<'inicio' | Servicio, string> = {
+  inicio: 'patrimonio',
+  'bienes-raices': 'construye',
+  patrimonio: 'protege',
+};
+
+const SUBTITLE: Record<'inicio' | Servicio, string> = {
+  inicio: 'Bienes raíces y estrategias patrimoniales para construir con visión y proteger lo que más te importa.',
+  'bienes-raices': 'Compra, renta o invierte en propiedades en México y Estados Unidos con asesoría estratégica.',
+  patrimonio: 'Vida, salud, ahorro y retiro: cuatro estrategias para que lo que construyes hoy siga en pie mañana.',
+};
+
+const SERVICES: { id: Servicio; title: string; body: string }[] = [
+  {
+    id: 'bienes-raices',
+    title: 'Bienes raíces',
+    body: 'Encuentra, compra o renta la propiedad que construye tu patrimonio.',
+  },
+  {
+    id: 'patrimonio',
+    title: 'Patrimonio',
+    body: 'Protege lo que construyes con estrategias de vida, salud, ahorro y retiro.',
+  },
+];
 
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
-  const navigate = useNavigate();
-  const { site } = useSiteUser();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const mapboxToken = (site?.platform_config?.mapbox_token || import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || '').trim();
-
-  // Search Filter State
-  const [transactionType, setTransactionType] = useState<'1' | '2'>('1'); // 1 = Venta, 2 = Renta
-  const [propertyType, setPropertyType] = useState<string>('');
-  const [locationText, setLocationText] = useState<string>('');
-
-  // Suggestions and Autocomplete State
-  const [suggestions, setSuggestions] = useState<any[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [selectedCoords, setSelectedCoords] = useState<{ lat: number; lng: number; name: string } | null>(null);
+  const param = searchParams.get('servicio');
+  const servicio: Servicio | null = param === 'bienes-raices' || param === 'patrimonio' ? param : null;
+  const mode = servicio ?? 'inicio';
 
   useEffect(() => {
     setIsVisible(true);
-    
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-
+    const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Listen to clicks outside to close suggestions dropdown
-  useEffect(() => {
-    const handleClickOutside = () => {
-      setShowSuggestions(false);
-    };
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
-
-  // Fetch suggestions with debounce as the user types
-  useEffect(() => {
-    if (!locationText.trim() || !mapboxToken) {
-      setSuggestions([]);
-      return;
-    }
-
-    // If the locationText matches the selected coordinates' name, don't query again
-    if (selectedCoords && locationText === selectedCoords.name) {
-      return;
-    }
-
-    const delayDebounce = setTimeout(async () => {
-      try {
-        const response = await fetch(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-            locationText
-          )}.json?access_token=${mapboxToken}&limit=5&types=neighborhood,locality,place,address&country=mx,us&proximity=-99.1332,19.4326`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          let features = data.features || [];
-          
-          const queryLower = locationText.toLowerCase();
-          const looksLikeUS = queryLower.includes('usa') || 
-                              queryLower.includes('eeuu') || 
-                              queryLower.includes('ee.uu') || 
-                              queryLower.includes('estados unidos') || 
-                              queryLower.includes('united states') || 
-                              queryLower.includes('miami') || 
-                              queryLower.includes('texas') || 
-                              queryLower.includes('dallas') ||
-                              queryLower.includes('houston') ||
-                              queryLower.includes('austin') ||
-                              queryLower.includes('san antonio') ||
-                              queryLower.includes('mcallen');
-
-          if (!looksLikeUS) {
-            features = [...features].sort((a: any, b: any) => {
-              const isAMexico = a.place_name?.toLowerCase().includes('méxico') || 
-                                a.place_name?.toLowerCase().includes('mexico') ||
-                                a.context?.some((c: any) => c.short_code?.toLowerCase() === 'mx' || c.text?.toLowerCase() === 'méxico' || c.text?.toLowerCase() === 'mexico');
-                                
-              const isBMexico = b.place_name?.toLowerCase().includes('méxico') || 
-                                b.place_name?.toLowerCase().includes('mexico') ||
-                                b.context?.some((c: any) => c.short_code?.toLowerCase() === 'mx' || c.text?.toLowerCase() === 'méxico' || c.text?.toLowerCase() === 'mexico');
-
-              if (isAMexico && !isBMexico) return -1;
-              if (!isAMexico && isBMexico) return 1;
-              return 0;
-            });
-          }
-          
-          setSuggestions(features);
-          setShowSuggestions(true);
-        }
-      } catch (error) {
-        console.error('Error fetching suggestions:', error);
-      }
-    }, 300);
-
-    return () => clearTimeout(delayDebounce);
-  }, [locationText, mapboxToken, selectedCoords]);
-
-  const handleSuggestionClick = (feature: any) => {
-    const [lng, lat] = feature.center;
-    const name = feature.place_name;
-    setLocationText(name);
-    setSelectedCoords({ lat, lng, name });
-    setSuggestions([]);
-    setShowSuggestions(false);
+  const select = (next: Servicio | null) => {
+    const params = new URLSearchParams(searchParams);
+    if (next) params.set('servicio', next);
+    else params.delete('servicio');
+    setSearchParams(params);
   };
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const params = new URLSearchParams();
-    if (transactionType) params.set('action', transactionType);
-    if (propertyType) params.set('type', propertyType);
-    if (locationText) params.set('search', locationText);
-    
-    if (selectedCoords) {
-      params.set('lat', String(selectedCoords.lat));
-      params.set('lng', String(selectedCoords.lng));
-    } else if (locationText.trim() && mapboxToken) {
-      try {
-        const response = await fetch(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-            locationText
-          )}.json?access_token=${mapboxToken}&limit=1&country=mx,us`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          if (data?.features && data.features.length > 0) {
-            const [lng, lat] = data.features[0].center;
-            params.set('lat', String(lat));
-            params.set('lng', String(lng));
-          }
-        }
-      } catch (error) {
-        console.error('Error geocoding in HeroSection:', error);
-      }
-    }
-    
-    navigate(`/mapa?${params.toString()}`);
+  const word = (text: string, key?: string) => {
+    const active = key && ACCENT[mode] === key;
+    return (
+      <span
+        className={`transition-colors duration-700 motion-reduce:transition-none ${key ? 'italic font-normal' : ''} ${
+          active ? 'text-[#E3A587]' : 'text-[#FAF7F2]'
+        }`}
+      >
+        {text}
+      </span>
+    );
   };
+
+  const reveal = (delay: string) =>
+    `transition-all duration-1000 ${delay} motion-reduce:transition-none ${
+      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+    }`;
 
   return (
-    <header className="relative w-full h-screen flex flex-col justify-center px-6 md:px-12 lg:px-24">
-      {/* 1. Full-screen cover background with subtle golden-hour parallax */}
+    <header className="relative w-full min-h-[100svh] flex flex-col justify-end md:justify-center px-6 md:px-12 lg:px-24 pt-28 pb-12 md:py-28">
+      {/* Fondo: cambia de arquitectura a familia según el servicio */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <div
-          className="w-full h-[120%] bg-cover bg-center transition-transform duration-1000 ease-out"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2574&auto=format&fit=crop')`,
-            transform: `translateY(${scrollY * 0.15}px) scale(1.02)`,
-          }}
-        />
-        {/* 2. Soft Dark/Warm transparent overlay for exquisite readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/45 to-black/20" />
+          className="absolute inset-0 h-[120%] transition-transform duration-1000 ease-out motion-reduce:transform-none"
+          style={{ transform: `translateY(${scrollY * 0.15}px) scale(1.02)` }}
+        >
+          <div
+            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 motion-reduce:transition-none ${
+              mode === 'patrimonio' ? 'opacity-0' : 'opacity-100'
+            }`}
+            style={{ backgroundImage: `url('${REAL_ESTATE_BG}')` }}
+          />
+          <div
+            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 motion-reduce:transition-none ${
+              mode === 'patrimonio' ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{ backgroundImage: `url('${PATRIMONIO_BG}')` }}
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/50 to-black/25" />
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/50 to-transparent md:hidden" />
       </div>
 
-      {/* 3. Main Content Container: Left-Aligned Editorial Focus */}
-      <div className="relative z-10 w-full max-w-[90rem] mx-auto flex flex-col items-start mt-12 md:mt-20">
-
-
-        {/* Big Large Editorial Headline */}
-        <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-[1.1] text-[#FAF7F2] font-light max-w-4xl mb-12">
-          <span
-            className={`block transition-all duration-1000 delay-200 ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-            }`}
-          >
-            Encuentra una propiedad que
+      <div className="relative z-10 w-full max-w-[90rem] mx-auto flex flex-col items-start">
+        <h1 className="font-serif text-[2.6rem] sm:text-6xl md:text-7xl xl:text-8xl leading-[1.05] font-light max-w-5xl">
+          <span className={`block ${reveal('delay-200')}`}>
+            {word('Diseña, ')}
+            {word('construye', 'construye')}
           </span>
-          <span
-            className={`block italic font-normal text-[#B76E4D] mt-2 transition-all duration-1000 delay-300 ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-            }`}
-          >
-            sí haga sentido
-          </span>
-          <span
-            className={`block transition-all duration-1000 delay-400 ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-            }`}
-          >
-            para tu futuro.
+          <span className={`block ${reveal('delay-300')}`}>
+            {word('y ')}
+            {word('protege', 'protege')}
+            {word(' tu ')}
+            {word('patrimonio', 'patrimonio')}
+            {word('.')}
           </span>
         </h1>
 
-        {/* 4. Sleek Horizontal Floating Pill Search Bar */}
-        <form
-          onSubmit={handleSearch}
-          className={`w-full max-w-4xl bg-white/10 backdrop-blur-md border border-white/20 p-2 md:p-3 rounded-none md:rounded-full flex flex-col md:flex-row gap-3 md:gap-2 items-center transition-all duration-1000 delay-500 shadow-elegant ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16'
-          }`}
-        >
-          {/* Action Selector (Pill style toggle inside bar) */}
-          <div className="w-full md:w-auto shrink-0 flex p-1 bg-black/20 border border-white/10 rounded-full">
-            <button
-              type="button"
-              onClick={() => setTransactionType('1')}
-              className={`px-5 py-2 text-[10px] uppercase tracking-widest font-sans rounded-full transition-all font-semibold whitespace-nowrap ${
-                transactionType === '1'
-                  ? 'bg-[#B76E4D] text-white shadow-sm'
-                  : 'text-white/60 hover:text-white'
-              }`}
-            >
-              Comprar
-            </button>
-            <button
-              type="button"
-              onClick={() => setTransactionType('2')}
-              className={`px-5 py-2 text-[10px] uppercase tracking-widest font-sans rounded-full transition-all font-semibold whitespace-nowrap ${
-                transactionType === '2'
-                  ? 'bg-[#B76E4D] text-white shadow-sm'
-                  : 'text-white/60 hover:text-white'
-              }`}
-            >
-              Rentar
-            </button>
-          </div>
-
-          {/* Vertical divider */}
-          <div className="hidden md:block w-px h-6 bg-white/20" />
-
-          {/* Location Search Field */}
-          <div className="relative flex-1 w-full flex items-center px-4 py-2">
-            <MapPin className="w-4 h-4 text-[#B76E4D] mr-3 shrink-0" />
-            <input
-              type="text"
-              placeholder="¿Qué colonia buscas? (ej. Polanco, Lomas...)"
-              value={locationText}
-              onClick={(e) => e.stopPropagation()}
-              onChange={(e) => {
-                setLocationText(e.target.value);
-                if (selectedCoords && e.target.value !== selectedCoords.name) {
-                  setSelectedCoords(null);
-                }
-              }}
-              onFocus={(e) => {
-                e.stopPropagation();
-                setShowSuggestions(true);
-              }}
-              className="bg-transparent w-full outline-none text-white placeholder-white font-sans text-xs md:text-sm"
-            />
-
-            {/* Suggestions Dropdown */}
-            {showSuggestions && suggestions.length > 0 && (
-              <div
-                onClick={(e) => e.stopPropagation()}
-                className="absolute left-0 right-0 top-full mt-3 bg-[#2E251E]/95 backdrop-blur-md border border-white/10 shadow-elegant z-50 max-h-60 overflow-y-auto rounded-md"
-              >
-                {suggestions.map((s) => (
-                  <button
-                    key={s.id}
-                    type="button"
-                    onClick={() => handleSuggestionClick(s)}
-                    className="w-full text-left px-4 py-2.5 text-[11px] text-white/80 hover:bg-[#B76E4D] hover:text-white font-sans transition-colors border-b border-white/5 last:border-0"
-                  >
-                    {s.place_name}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Vertical divider */}
-          <div className="hidden md:block w-px h-6 bg-white/20" />
-
-          {/* Property Type Dropdown */}
-          <div className="w-full md:w-52 flex items-center px-4 py-2">
-            <Home className="w-4 h-4 text-[#B76E4D] mr-3 shrink-0" />
-            <select
-              value={propertyType}
-              onChange={(e) => setPropertyType(e.target.value)}
-              className="bg-transparent w-full outline-none text-white placeholder-white/45 font-sans text-xs md:text-sm appearance-none cursor-pointer"
-            >
-              <option value="" className="bg-[#2E251E] text-white">Cualquier tipo</option>
-              <option value="casa" className="bg-[#2E251E] text-white">Residencias</option>
-              <option value="departamento" className="bg-[#2E251E] text-white">Departamentos</option>
-              <option value="penthouse" className="bg-[#2E251E] text-white">Penthouses</option>
-              <option value="terreno" className="bg-[#2E251E] text-white">Terrenos</option>
-            </select>
-          </div>
-
-          {/* Compact Action Button inside Pill */}
-          <button
-            type="submit"
-            className="w-full md:w-auto px-6 py-3.5 md:py-3 bg-[#B76E4D] text-white hover:bg-[#FAF7F2] hover:text-[#2E251E] transition-all duration-300 rounded-full font-sans uppercase text-[10px] tracking-[0.25em] font-semibold flex items-center justify-center gap-2 whitespace-nowrap shrink-0 shadow-sm"
-          >
-            <Search className="w-3.5 h-3.5" />
-            Buscar
-          </button>
-        </form>
-
         <p
-          className={`mt-6 text-base sm:text-lg md:text-xl font-sans tracking-wide font-light text-white/70 max-w-2xl text-justify transition-all duration-1000 delay-600 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
+          key={`sub-${mode}`}
+          className={`mt-6 max-w-2xl font-sans text-base sm:text-lg md:text-xl font-light leading-relaxed text-white/75 animate-fade-in motion-reduce:animate-none ${reveal('delay-500')}`}
         >
-          Asesoría estratégica para inversiones inmobiliarias y decisiones patrimoniales con visión.
+          {SUBTITLE[mode]}
         </p>
 
+        <div key={`stage-${mode}`} className="mt-10 w-full animate-fade-in-up motion-reduce:animate-none">
+          {mode === 'inicio' && (
+            <div className="grid w-full max-w-4xl gap-4 md:grid-cols-2">
+              {SERVICES.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => select(s.id)}
+                  className="group flex items-center justify-between gap-6 rounded-3xl border border-white/20 bg-black/25 p-6 text-left backdrop-blur-md transition-all duration-300 hover:border-white/60 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E3A587] md:p-7"
+                >
+                  <span>
+                    <span className="block font-serif text-3xl text-white md:text-4xl">{s.title}</span>
+                    <span className="mt-2 block font-sans text-sm font-light leading-relaxed text-white/70">{s.body}</span>
+                  </span>
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#B76E4D] text-white transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none">
+                    <ArrowRight className="h-5 w-5" />
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {mode === 'bienes-raices' && (
+            <div className="flex flex-col gap-5">
+              <HeroPropertySearch />
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+                <button
+                  type="button"
+                  onClick={() => select(null)}
+                  className="inline-flex min-h-[44px] items-center gap-2 font-sans text-xs text-white/70 transition-colors hover:text-white"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Cambiar servicio
+                </button>
+                <Link
+                  to="/mapa"
+                  className="inline-flex min-h-[44px] items-center gap-2 font-sans text-xs text-white/70 transition-colors hover:text-white"
+                >
+                  <MapIcon className="h-4 w-4" />
+                  Ver todas en el mapa
+                </Link>
+                <Link
+                  to="/vender-propiedad"
+                  className="inline-flex min-h-[44px] items-center gap-2 font-sans text-xs text-white/70 transition-colors hover:text-white"
+                >
+                  Quiero vender mi propiedad
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {mode === 'patrimonio' && (
+            <div className="flex flex-col gap-5">
+              <div className="grid w-full max-w-5xl grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
+                {PATRIMONIO_PRODUCTS.map((p, i) => (
+                  <Link
+                    key={p.slug}
+                    to={`/patrimonio/${p.slug}`}
+                    style={{ animationDelay: `${i * 90}ms` }}
+                    className="group flex flex-col overflow-hidden rounded-3xl border border-white/20 bg-black/30 backdrop-blur-md opacity-0 animate-fade-in-up transition-colors duration-300 hover:border-white/60 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E3A587] motion-reduce:animate-none motion-reduce:opacity-100"
+                  >
+                    <span className="relative block h-20 overflow-hidden sm:h-28">
+                      <img
+                        src={p.image.replace('w=2000', 'w=700')}
+                        alt=""
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 motion-reduce:transition-none"
+                      />
+                    </span>
+                    <span className="flex flex-1 items-end justify-between gap-3 p-4 md:p-5">
+                      <span>
+                        <span className="block font-serif text-2xl text-white md:text-3xl">{p.name}</span>
+                        <span className="mt-1 block font-sans text-xs font-light leading-snug text-white/70 md:text-sm">{p.promise}</span>
+                      </span>
+                      <ArrowRight className="mb-1 hidden h-5 w-5 shrink-0 text-[#E3A587] transition-transform group-hover:translate-x-1 sm:block" />
+                    </span>
+                  </Link>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => select(null)}
+                className="inline-flex min-h-[44px] w-fit items-center gap-2 font-sans text-xs text-white/70 transition-colors hover:text-white"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Cambiar servicio
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

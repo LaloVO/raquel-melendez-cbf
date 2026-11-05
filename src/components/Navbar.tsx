@@ -22,6 +22,7 @@ const Navbar = () => {
 
   const navLinks = [
     { href: '/#mision', label: 'Misión y Visión' },
+    { href: '/?servicio=patrimonio', label: 'Patrimonio' },
     { href: '/mapa', label: 'Inmuebles' },
     { href: '/desarrollos', label: 'Desarrollos' },
     { href: '/masaroca', label: 'Masaroca' },
@@ -73,7 +74,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-8">
             <div className="flex gap-6 text-[12.5px] uppercase tracking-[0.25em] font-sans font-medium text-black">
               {navLinks.map((link) => (
                 <button
@@ -102,7 +103,7 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden text-black hover:text-[#B76E4D] transition-colors focus:outline-none shrink-0 z-50 p-1"
+            className="lg:hidden text-black hover:text-[#B76E4D] transition-colors focus:outline-none shrink-0 z-50 p-1"
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? <X className="w-[24px] h-[24px]" /> : <Menu className="w-[24px] h-[24px]" />}
@@ -112,7 +113,7 @@ const Navbar = () => {
 
       {/* Mobile Fullscreen Menu Overlay - Outside nav tag for true viewport positioning */}
       <div
-        className={`fixed inset-0 bg-[#FAF7F2] z-[100] md:hidden flex flex-col justify-center items-center gap-8 transition-all duration-300 ${
+        className={`fixed inset-0 bg-[#FAF7F2] z-[100] lg:hidden flex flex-col justify-center items-center gap-8 transition-all duration-300 ${
           isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >

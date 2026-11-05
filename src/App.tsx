@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import ScrollToTop from "./components/ScrollToTop";
 import Index from "./pages/Index";
@@ -12,6 +12,7 @@ import SolicitaInmueble from "./pages/SolicitaInmueble";
 import MasarocaPage from "./pages/Masaroca";
 import Desarrollos from "./pages/Desarrollos";
 import VenderPropiedad from "./pages/VenderPropiedad";
+import PatrimonioProducto from "./pages/PatrimonioProducto";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,8 @@ const App = () => (
             <Route path="/masaroca" element={<MasarocaPage />} />
             <Route path="/desarrollos" element={<Desarrollos />} />
             <Route path="/vender-propiedad" element={<VenderPropiedad />} />
+            <Route path="/patrimonio" element={<Navigate to="/?servicio=patrimonio" replace />} />
+            <Route path="/patrimonio/:producto" element={<PatrimonioProducto />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
