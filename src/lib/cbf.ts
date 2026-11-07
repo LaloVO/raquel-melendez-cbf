@@ -69,6 +69,40 @@ const headers = () => ({
   "Content-Type": "application/json",
 });
 
+/** Para qué se sube un archivo: CBF decide con eso dónde se guarda y qué tipos acepta. */
+export type UploadPurpose = "lead_document" | "seller_document" | "seller_image";
+
+/**
+ * Sube un archivo con permiso de CBF y devuelve su ruta (la que se registra en `/leads` o en `/seller-inquiries`). El sitio no
+ * escribe en Supabase: CBF elige la ruta y firma una URL de subida de un solo uso, y el archivo va directo a esa URL. Así los
+ * documentos quedan en buckets privados (migración 20261016000100 de la Suite) y entran al estatuto de borrado.
+ */
+export async function uploadFile(file: File, purpose: UploadPurpose): Promise<string> {
+  const res = await fetch(`${BASE_URL}/uploads`, {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify({ purpose, file_name: file.name, content_type: file.type }),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json.error || "No fue posible preparar la subida del archivo");
+  const { path, upload_url, content_type } = json.data as { path: string; upload_url: string; content_type: string };
+  const upload = await fetch(upload_url, { method: "PUT", headers: { "Content-Type": content_type }, body: file });
+  if (!upload.ok) throw new Error(`No se pudo subir "${file.name}" (${upload.status}).`);
+  return path;
+}
+
+/** Captación de propietarios: CBF la guarda a nombre del asesor del sitio (el asesor sale del token, no del cuerpo). */
+export async function postSellerInquiry(payload: unknown): Promise<{ id: string }> {
+  const res = await fetch(`${BASE_URL}/seller-inquiries`, {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify(payload),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json.error || "No fue posible registrar la captación");
+  return json.data;
+}
+
 export async function fetchSiteUser(): Promise<{ user: CBFUser; site: CBFSite }> {
   const res = await fetch(`${BASE_URL}/user`, { headers: headers() });
   if (!res.ok) throw new Error("Error al cargar datos del sitio");
@@ -135,7 +169,8 @@ export interface LeadSubmission {
   uso_destino: "vivienda_propia" | "inversion" | "negocio" | "vacacional" | "otro";
   detalles_uso?: string;
   documentos_disponibles?: string[];
-  documentos_urls?: Record<string, string>;
+  /** Documentos subidos con `uploadFile(…, "lead_document")`: `{ <documento>: <ruta> }`. */
+  documentos?: Record<string, string>;
   cita_virtual_solicitada?: boolean;
   cita_virtual_fecha_hora?: string;
 }

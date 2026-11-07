@@ -42,37 +42,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { submitLead, fetchBusySlots } from "@/lib/cbf";
-
-const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string) || "https://nxouqoyppkiqrhfzovny.supabase.co";
-const SUPABASE_ANON_KEY = (import.meta.env.VITE_SUPABASE_ANON_KEY as string) || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54b3Vxb3lwcGtpcXJoZnpvdm55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3MDQxODMsImV4cCI6MjA5NDI4MDE4M30.zDlAxuD-YISh93Y4CWTWuJJP9HAWlPru32MbAfc3dtA";
-
-async function uploadFileToSupabase(file: File, email: string, docId: string): Promise<string> {
-  const emailSanitized = email.toLowerCase().replace(/[^a-z0-9]/g, "_");
-  const sanitizedFileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, "_")}`;
-  const path = `leads/${emailSanitized}/${docId}/${sanitizedFileName}`;
-
-  const uploadUrl = `${SUPABASE_URL}/storage/v1/object/documentos-leads/${path}`;
-
-  const res = await fetch(uploadUrl, {
-    method: "POST",
-    headers: {
-      "apikey": SUPABASE_ANON_KEY,
-      "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-      "Content-Type": file.type,
-      "x-upsert": "true",
-    },
-    body: file,
-  });
-
-  if (!res.ok) {
-    const errText = await res.text();
-    console.error("Supabase Storage error details:", errText);
-    throw new Error(`Error en el almacenamiento de base de datos: ${res.statusText}`);
-  }
-
-  return `${SUPABASE_URL}/storage/v1/object/public/documentos-leads/${path}`;
-}
+import { submitLead, fetchBusySlots, uploadFile } from "@/lib/cbf";
 
 const STEPS = [
   { id: 1, title: "Información", description: "Tus datos básicos" },
@@ -181,7 +151,7 @@ const fullSchema = z.object({
   usoDestino: z.enum(["vivienda_propia", "inversion", "negocio", "vacacional", "otro"]),
   detallesUso: z.string().optional(),
   documentosDisponibles: z.array(z.string()).optional(),
-  documentos_urls: z.record(z.string()).optional()
+  documentos: z.record(z.string()).optional()
 });
 
 type FormData = z.infer<typeof fullSchema>;
@@ -394,7 +364,7 @@ export default function FormularioMultiStep({ onSubmitComplete }: FormularioMult
         uso_destino: data.usoDestino,
         detalles_uso: data.detallesUso,
         documentos_disponibles: data.documentosDisponibles,
-        documentos_urls: data.documentos_urls || {},
+        documentos: data.documentos || {},
         cita_virtual_solicitada: citaVirtualSolicitada,
         cita_virtual_fecha_hora: citaVirtualSolicitada && citaVirtualFecha && citaVirtualHora
           ? (() => {
@@ -486,17 +456,11 @@ export default function FormularioMultiStep({ onSubmitComplete }: FormularioMult
 
     // Se ha quitado la restricción de tamaño por completo por petición del usuario
 
-    const email = getValues("email");
-    if (!email) {
-      toast.error("Por favor ingresa tu correo electrónico en el paso 1 antes de adjuntar archivos.");
-      return;
-    }
-
     setUploadingDocs((prev) => ({ ...prev, [activeUploadId]: true }));
-    const toastId = toast.loading(`Subiendo "${file.name}" directamente a la base de datos...`);
+    const toastId = toast.loading(`Subiendo "${file.name}"...`);
 
     try {
-      const publicUrl = await uploadFileToSupabase(file, email, activeUploadId);
+      const path = await uploadFile(file, "lead_document");
 
       // Carga exitosa: Añadir a documentosDisponibles
       if (!documentosDisponibles.includes(activeUploadId)) {
@@ -504,11 +468,11 @@ export default function FormularioMultiStep({ onSubmitComplete }: FormularioMult
       }
 
       setDocumentosUrls((prev) => {
-        const updated = { ...prev, [activeUploadId]: publicUrl };
-        setValue("documentos_urls", updated);
+        const updated = { ...prev, [activeUploadId]: path };
+        setValue("documentos", updated);
         return updated;
       });
-      toast.success(`Archivo "${file.name}" cargado exitosamente directamente en la base de datos.`, { id: toastId });
+      toast.success(`Archivo "${file.name}" cargado en tu expediente.`, { id: toastId });
     } catch (err: any) {
       console.error(err);
       toast.error(`Error al subir el archivo: ${err.message || "Error desconocido"}`, { id: toastId });
@@ -531,7 +495,7 @@ export default function FormularioMultiStep({ onSubmitComplete }: FormularioMult
     setDocumentosUrls((prev) => {
       const copy = { ...prev };
       delete copy[id];
-      setValue("documentos_urls", copy);
+      setValue("documentos", copy);
       return copy;
     });
     toast.success("Documento removido del expediente.");

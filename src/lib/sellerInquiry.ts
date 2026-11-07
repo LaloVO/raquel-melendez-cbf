@@ -1,3 +1,5 @@
+import { postSellerInquiry, uploadFile } from "@/lib/cbf";
+
 const SUPABASE_URL =
   (import.meta.env.VITE_SUPABASE_URL as string) || "https://nxouqoyppkiqrhfzovny.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -6,15 +8,8 @@ const SUPABASE_ANON_KEY =
   ".eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54b3Vxb3lwcGtpcXJoZnpvdm55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3MDQxODMsImV4cCI6MjA5NDI4MDE4M30" +
   ".zDlAxuD-YISh93Y4CWTWuJJP9HAWlPru32MbAfc3dtA";
 
-const restHeaders = () => ({
-  apikey: SUPABASE_ANON_KEY,
-  Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-  "Content-Type": "application/json",
-  Prefer: "return=representation",
-});
 
 export interface SellerInquiryPayload {
-  advisor_user_id: string;
   nombre_completo: string;
   email: string;
   telefono: string;
@@ -42,91 +37,27 @@ export interface SellerInquiryPayload {
   descripcion_estado_propiedad?: string;
   descripcion_inversion_propiedad?: string;
   es_herencia?: boolean;
+  /** Fotos subidas con `uploadFile(…, "seller_image")`, por su ruta. */
+  imagenes: { path: string; nombre_imagen: string; orden: number }[];
+  /** Documentos subidos con `uploadFile(…, "seller_document")`, por su ruta. */
+  documentos: { path: string; nombre_documento: string; required: boolean }[];
+  amenidades: number[];
 }
 
-export async function uploadSellerFile(
-  file: File,
-  advisorId: string,
-  bucket: "seller-inquiry-images" | "seller-inquiry-docs"
-): Promise<string> {
-  const sanitizedName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, "_")}`;
-  const path = `${advisorId}/${sanitizedName}`;
-
-  const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${bucket}/${path}`, {
-    method: "POST",
-    headers: {
-      apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      "Content-Type": file.type || "application/octet-stream",
-      "x-upsert": "true",
-    },
-    body: file,
-  });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || "Error al subir archivo");
-  }
-
-  return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
+/**
+ * Sube una foto o un documento de la captación con permiso de CBF y devuelve su ruta (owner, 2026-10-16: «es el CBF el que escribe
+ * en Supabase, NO los sitios»). Los buckets de captación ya no aceptan subidas con la llave pública (migración 20261016000100).
+ */
+export function uploadSellerFile(file: File, bucket: "seller-inquiry-images" | "seller-inquiry-docs"): Promise<string> {
+  return uploadFile(file, bucket === "seller-inquiry-images" ? "seller_image" : "seller_document");
 }
 
-export async function submitSellerInquiry(payload: SellerInquiryPayload): Promise<{ id: string }> {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/seller_inquiries`, {
-    method: "POST",
-    headers: restHeaders(),
-    body: JSON.stringify(payload),
-  });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || "Error al enviar la solicitud");
-  }
-
-  const data = await res.json();
-  return Array.isArray(data) ? data[0] : data;
-}
-
-export async function insertSellerImages(
-  inquiryId: string,
-  images: { image_url: string; nombre_imagen: string; orden: number }[]
-): Promise<void> {
-  if (!images.length) return;
-  const payload = images.map((img) => ({ id_seller_inquiry: inquiryId, ...img }));
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/seller_inquiry_images`, {
-    method: "POST",
-    headers: restHeaders(),
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) throw new Error("Error al guardar imágenes");
-}
-
-export async function insertSellerDocuments(
-  inquiryId: string,
-  docs: { nombre_documento: string; file_url: string; required: boolean }[]
-): Promise<void> {
-  if (!docs.length) return;
-  const payload = docs.map((d) => ({ id_seller_inquiry: inquiryId, ...d }));
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/seller_inquiry_documents`, {
-    method: "POST",
-    headers: restHeaders(),
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) throw new Error("Error al guardar documentos");
-}
-
-export async function insertSellerAmenidades(
-  inquiryId: string,
-  amenidadIds: number[]
-): Promise<void> {
-  if (!amenidadIds.length) return;
-  const payload = amenidadIds.map((id) => ({ id_seller_inquiry: inquiryId, id_amenidad: id }));
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/seller_inquiry_amenidades`, {
-    method: "POST",
-    headers: restHeaders(),
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) throw new Error("Error al guardar amenidades");
+/**
+ * La captación completa en una sola petición a CBF, que la guarda en `seller_inquiries` y sus tablas hijas a nombre del asesor del
+ * sitio (el asesor sale del token). Antes se escribía con la llave pública y el `return=representation` la rechazaba siempre.
+ */
+export function submitSellerInquiry(payload: SellerInquiryPayload): Promise<{ id: string }> {
+  return postSellerInquiry(payload);
 }
 
 export async function fetchEstados(): Promise<{ id_estado: number; nombre_estado: string }[]> {
