@@ -206,3 +206,17 @@ export function actionLabel(id?: number): string {
   };
   return id ? (map[id] ?? "Venta") : "Venta";
 }
+
+/**
+ * Un catálogo de CBF (`estados`, `ciudades` con `id_estado`, `amenidades`, `tipos-propiedad`, `operaciones`) con el token del
+ * sitio, como en la plantilla. Owner, 2026-10-16: los sitios no leen Supabase. Rotación de llaves de la Suite (2026-11-13): la anon
+ * heredada que `sellerInquiry.ts` traía escrita se desactiva, y sin esto el formulario de venta se quedaría sin estados, ciudades
+ * ni amenidades.
+ */
+export async function fetchCatalog<T>(catalog: string, params?: Record<string, string>): Promise<T[]> {
+  const query = params ? `?${new URLSearchParams(params)}` : "";
+  const res = await fetch(`${BASE_URL}/catalogs/${encodeURIComponent(catalog)}${query}`, { headers: headers() });
+  if (!res.ok) throw new Error(`No fue posible cargar el catálogo (${res.status}).`);
+  const json = await res.json();
+  return json.data ?? [];
+}

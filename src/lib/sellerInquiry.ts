@@ -1,13 +1,4 @@
-import { postSellerInquiry, uploadFile } from "@/lib/cbf";
-
-const SUPABASE_URL =
-  (import.meta.env.VITE_SUPABASE_URL as string) || "https://nxouqoyppkiqrhfzovny.supabase.co";
-const SUPABASE_ANON_KEY =
-  (import.meta.env.VITE_SUPABASE_ANON_KEY as string) ||
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" +
-  ".eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54b3Vxb3lwcGtpcXJoZnpvdm55Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3MDQxODMsImV4cCI6MjA5NDI4MDE4M30" +
-  ".zDlAxuD-YISh93Y4CWTWuJJP9HAWlPru32MbAfc3dtA";
-
+import { fetchCatalog, postSellerInquiry, uploadFile } from "@/lib/cbf";
 
 export interface SellerInquiryPayload {
   nombre_completo: string;
@@ -60,35 +51,25 @@ export function submitSellerInquiry(payload: SellerInquiryPayload): Promise<{ id
   return postSellerInquiry(payload);
 }
 
+/**
+ * Catálogos del formulario por CBF con el token del sitio (owner, 2026-10-16: los sitios no leen Supabase). Si CBF no responde,
+ * el formulario queda sin opciones en vez de romperse, como antes.
+ */
 export async function fetchEstados(): Promise<{ id_estado: number; nombre_estado: string }[]> {
-  const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/estados?select=id_estado,nombre_estado&order=nombre_estado`,
-    { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
-  );
-  if (!res.ok) return [];
-  return res.json();
+  return fetchCatalog<{ id_estado: number; nombre_estado: string }>("estados").catch(() => []);
 }
 
 export async function fetchCiudadesByEstado(
   idEstado: number
 ): Promise<{ id_ciudad: number; nombre_ciudad: string }[]> {
-  const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/ciudades?select=id_ciudad,nombre_ciudad&id_estado=eq.${idEstado}&order=nombre_ciudad`,
-    { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
-  );
-  if (!res.ok) return [];
-  return res.json();
+  return fetchCatalog<{ id_ciudad: number; nombre_ciudad: string }>("ciudades", { id_estado: String(idEstado) })
+    .catch(() => []);
 }
 
 export async function fetchAmenidades(): Promise<
   { id_amenidad: number; nombre_amenidad: string }[]
 > {
-  const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/amenidades?select=id_amenidad,nombre_amenidad&order=nombre_amenidad`,
-    { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
-  );
-  if (!res.ok) return [];
-  return res.json();
+  return fetchCatalog<{ id_amenidad: number; nombre_amenidad: string }>("amenidades").catch(() => []);
 }
 
 export async function geocodeAddress(
